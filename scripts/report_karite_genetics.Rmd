@@ -1,0 +1,430 @@
+---
+title: "Karite genetic diversity"
+author: "Karen Cristine Goncalves dos Santos"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    fig_caption: yes
+    keep_tex: yes
+---
+
+```{r Load packages, message=FALSE, warning=FALSE, include=FALSE}
+packages_to_use = c(
+	"poppr", "adegenet", "ape",
+	"mmod", "treemap", "tidyverse",
+	"vcfR", "pegas", "hierfstat",
+	"ggpubr")
+
+# install.packages(packages_to_use, repos = "http://cran.rstudio.com", 
+# 								 dependencies = TRUE)
+for (i in packages_to_use) { 
+	library(i, character.only = T)}
+load("RData/differentiation_metrics.RData")
+load("RData/Genetic_parameters.RData")
+load("RData/missing_data.RData")
+```
+```{r Missing data, echo=FALSE, fig.height=7, fig.width=6, message=FALSE, warning=FALSE}
+theme_set(theme_bw())
+
+# data.frame(locus = names(miss_loc), 
+# 					 values = unname(miss_loc))  %>%
+# 	ggplot(aes(y = locus, x = values)) +
+# 	geom_col(fill = "black") + 
+# 	labs(x = "Proportion of available data",
+# 			 y = "Loci",
+# 			 title = "Loci with missing data") +
+# 	theme(axis.text.y = element_blank(),
+# 				axis.ticks.y = element_blank())
+
+# cat("    \n\n")
+
+data.frame(locus = names(miss_80_loc), 
+					 values = unname(miss_80_loc))  %>%
+	ggplot(aes(y = locus, x = values)) +
+	geom_col(fill = "black") + 
+	labs(x = "Proportion of available data",
+			 y = "Loci",
+			 title = "Loci with > 20% of missing data") +
+	theme(axis.ticks.y = element_blank())
+
+cat("    \n\n")
+
+# data.frame(individuals = names(miss_ind), 
+# 					 values = unname(miss_ind))  %>%
+# 	ggplot(aes(y = individuals, x = values)) +
+# 	geom_col(fill = "black") + 
+# 	labs(x = "Proportion of available data",
+# 			 y = "Individuals",
+# 			 title = "Individuals with missing data") +
+# 	theme(axis.text.y = element_blank(),
+# 				axis.ticks.y = element_blank())
+# 
+# cat("    \n\n")
+
+data.frame(individuals = names(miss_80_ind), 
+					 values = unname(miss_80_ind))  %>%
+	ggplot(aes(y = individuals, x = values)) +
+	geom_col(fill = "black") + 
+	labs(x = "Proportion of available data",
+			 y = "Individuals",
+			 title = "Individuals with > 20% of missing data") +
+	theme(axis.ticks.y = element_blank())
+
+```
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(knitr)
+
+new_basicstats <- list(
+	countries = 
+		kable(basic_stats_print[
+			, c("acronym", "variable", groups[["countries"]])], 
+					format = "simple",
+					col.names = c("", "", groups[["countries"]])),
+	use = basic_stats_print[, groups[["use"]]] %>% t() %>% 
+		as.data.frame(row.names = groups[["use"]]) %>%
+		kable(row.names = T,
+					format = "simple",
+					col.names = basic_stats_print$acronym)
+	
+)
+
+
+for (i in groups$countries) {
+	regions = groups$regions[groups$regions %in% 
+													 	population_information$Region[
+													 		population_information$Country == i]]
+	new_basicstats[[i]][["regions"]] = 
+		basic_stats_print[, regions] %>% t() %>% 
+		as.data.frame(row.names = regions) %>%
+		kable(row.names = T,
+					format = "simple",
+					col.names = basic_stats_print$acronym)
+	
+	if (i == "MALI") {next}
+	pops = groups$populations[groups$populations %in% 
+															population_information$Location.Population[
+																population_information$Country == i]]
+	
+	new_basicstats[[i]][["pops"]] = 
+		basic_stats_print[basic_stats_print$acronym %in% 
+					 	c("Ho", "Hs", "Ht", "Fis"), pops] %>% 
+		t() %>% as.data.frame(row.names = pops) %>%
+		kable(row.names = T,
+					format = "simple",
+					col.names = c("Ho", "Hs", "Ht", "Fis"))
+	
+	
+}
+```
+
+## Stats
+
+Heterozygosity graphs show the expected and observed heterozygosities (Hexp and Hobs, respectively) for each locus in the populations.
+
+I used Bartlett test of homogeneity of variances to test if the expected and observed heterozygosities were similar.
+
+In these tables, where it shows 'NaN' it means that the parameter cannot be calculated.
+
+In the case of Mali, there is only one region and one population location, so the values calculated for the country, the region and the population are the same.
+
+### Countries
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+library(knitr)
+
+tables_summary$countries
+new_basicstats$countries
+plots_ho_he$countries
+
+cat("  \n\n### Types of land use\n\n")
+
+tables_summary$use
+new_basicstats$use
+plots_ho_he$use
+
+for (i in names(tables_summary)[3:5]) {
+	
+	if (i == "MALI") {next}
+	cat("  \n\n###", i, "  \n\n#### Regions \n\n  ")
+	
+	print(tables_summary[[i]]$regions)
+	cat("\n")
+	print(new_basicstats[[i]]$regions)
+	cat("\n")
+	print(plots_ho_he[[i]]$regions)
+	
+	
+	cat("  \n\n#### 'Localities'\n\n  ")
+	print(tables_summary[[i]]$pops)
+	cat("\n")
+	print(new_basicstats[[i]]$pops)
+	cat("\n")
+	print(plots_ho_he[[i]]$pops)
+}
+
+```
+
+## Allelic richness
+
+```{r, warning=F, echo=F}
+load("RData/allelic_richness.RData")
+population_information <- read.csv(
+	file = "input data - DO NOT MODIFY/Population.csv")
+names(population_information) <- c("Taxa", "Taxa.Name", "Country",
+																	 "Region", "Location.Population",
+																	 "Type.Land.Use")
+
+population_information = 
+	population_information[- which(is.na(population_information$Taxa)),]
+
+sample_size = lapply(3:6, function(x) {
+	a = table(population_information[,x])
+	
+	if(x %in% c(3, 6)) {
+		names = sort(unique(population_information[, x]))
+	} else if (x == 4) {
+		names = paste0(population_information[,3],"_",
+									 population_information[,4]) %>% unique %>% sort
+	} else {
+		names = paste0(population_information[,3],"_",
+									 population_information[,4],"_",
+									 population_information[,5]) %>% unique %>% sort	
+	}
+	
+	data.frame(names, n = a)
+})
+
+names(sample_size) = names(longer_allelic)
+longer_allelic$countries +
+	geom_text(data = sample_size[[1]], aes(x = names, y = 1.75, 
+																				 label = paste0("n = ", n.Freq)))+
+	labs(title = "Allelic richness for Countries", x = "") +
+	theme(axis.text.x = element_text(vjust = 0.5, hjust = 1))
+
+longer_allelic$regions +
+	labs(title = "Allelic richness for Regions", x = "", 
+			 caption = "Value inside indicates sample size")+
+	geom_text(data = sample_size[[2]], aes(x = names, y = 1.75, 
+																				 label = paste0(n.Freq)))+
+	theme(axis.text.x = element_text(vjust = 0.5, hjust = 1))
+
+longer_allelic$populations +
+	geom_text(data = sample_size[[3]], aes(x = names, y = 1.75, 
+																				 label = paste0(n.Freq)))+
+	labs(title = "Allelic richness for Population localities", x = "Locality", 
+			 caption = "Value inside indicates sample size")+
+	theme(axis.text.x = element_text(vjust = 0.5, hjust = 1))
+
+longer_allelic$use +
+	geom_text(data = sample_size[[4]], aes(x = names, y = 1.75, 
+																				 label = paste0("n = ", n.Freq)))+
+	labs(title = "Allelic richness for Land uses", x = "Type of land use")+
+	theme(axis.text.x = element_text(vjust = 0.5, hjust = 1))
+
+```
+
+# Genetic distance between samples
+
+## PCA
+
+I used Tassel5 to perfom principal component analysis on the SNP data. Each component explains very little of the variance of the data, so here are two graphs with the first 4 principal components.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+theme_set(theme_minimal() + 
+						theme(axis.line = element_blank()))
+
+data.frame(eigenvectors = 1:length(karite_ev$names.arg),
+					 variance_explained = karite_ev$names.arg) %>%
+	ggplot(aes(eigenvectors, variance_explained)) +
+	geom_col(fill = "black", color = "black") +
+	scale_y_continuous(breaks = seq(0, 10, 1)) +
+	labs(x = "Eigenvectors", y = karite_ev[[2]])
+
+cat("    \n\n")
+karite_pca + 
+	geom_hline(yintercept = c(-5, 5), color = "red", linetype = "dotdash") +
+	geom_vline(xintercept = c(-9), color = "red", linetype = "dotdash")
+	
+```
+
+I repeated the PCA with only the individuals in the big group (those located between the red dotdashed line in PC2 & to the right of the red dotdashed line in PC1).
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+data.frame(eigenvectors = 1:length(biggroup_ev$names.arg),
+					 variance_explained = biggroup_ev$names.arg) %>%
+	ggplot(aes(eigenvectors, variance_explained)) +
+	geom_col(fill = "black", color = "black") +
+	scale_y_continuous(breaks = seq(0, 10, 0.5)) +
+	labs(x = "Eigenvectors", y = karite_ev[[2]])
+
+cat("    \n\n")
+biggroup_pca_plot
+
+```
+
+## Correspondance analysis
+
+```{r Correspondence Analysis, echo=FALSE, fig.height=8, fig.width=8, message=FALSE, warning=FALSE, results="asis"}
+theme_set(theme_minimal() + 
+						theme(axis.line = element_blank()))
+
+data.frame(pops = rownames(coa_pops[[3]]$li), 
+													coa_pops[[3]]$li) %>%
+		mutate(Country = gsub("([A-Z]+)_.+", "\\1", pops)) %>%
+		ggplot(aes(Axis1, Axis2, fill = Country, label = pops)) +
+		geom_label() +
+		labs(x = paste0("Axis 1: (", round(coa_pops[[3]]$eig[1]*100, 2), "%)"),
+				 y = paste0("Axis 2: (", round(coa_pops[[3]]$eig[2]*100, 2), "%)"),
+				 title = "Correspondence Analysis") +
+		geom_hline(yintercept = 0) +
+		geom_vline(xintercept = 0)
+
+```
+
+## AMOVA
+
+```{r AMOVA, echo=FALSE, fig.height=6, fig.width=6, message=FALSE, warning=FALSE, results="asis"}
+load("RData/amova_res.RData")
+knitr::kable(
+	amova$results, 
+	caption = 
+		"Result AMOVA. Hierarchy: _Country - Region - Location.Population_.")
+knitr::kable(amova$componentsofcovariance, 
+						 caption = "Components of covariance.")
+knitr::kable(amova$statphi, 
+						 caption = "Phi - population variation statistics.")
+
+data.frame(Test = rand_amova$names,
+					 Obs = rand_amova$obs, 
+					 Std.Obs = rand_amova$expvar$Std.Obs,
+					 Alter = rand_amova$alter,
+					 p.Value = rand_amova$pvalue) %>%
+	knitr::kable(caption = "Monte-Carlo tests (999 repetitions). Sample = population localities")
+
+```
+## Nei's distance 
+
+I used the function "dist.genpop" from the package *adegenet* to calculate the Nei's distance between the samples.
+
+In the heatmap below, darkgray to black indicates low genetic distance between the populations, while light gray to white indicates high genetic distance.
+
+We can see they are very similar but there are some groups:
+
+-   The samples from Tchad: Moyen-Chari - Kagala, Mayo-kebbi - Pala, Mandoul - Peni and Mandoul - Kemkiam (top right)
+-   The sample from Mali with samples from Cameroun Ouest (center)
+-   The samples from Cameroun Nord (down and left from the previous ones)
+-   Two samples from Cameroun Extreme-Nord: Mayo-Tsana and Mayo-Dana (down and left from the previous ones)
+
+We also see that the samples from Tchad Logone Oriental are different from all the others and from each other.
+
+```{r echo=FALSE, fig.height=8, fig.width=9, message=FALSE, warning=FALSE}
+load("RData/heatmap_nei.RData")
+
+heatmap_nei
+```
+
+## Differentiation metrics
+
+I used the package _mmod_ to calculate the Jost's D, Hendrick's G'st and Nei's G'st between all populations.
+
+### Countries
+
+```{r echo=FALSE, fig.height=6, message=F, warning=F, results="asis"}
+library(ggpubr)
+
+for (i in names(differentiation)) {
+	a = ifelse(i == "Jost_D", "Jost's D",
+						 ifelse(i == "Nei_Gst", "Nei's G'st", "Hendrick's G'st"))
+
+	knitr::kable(differentiation[[i]]$countries[
+	, -ncol(differentiation[[i]]$countries)],
+	caption = a) %>% print
+}
+
+# ggarrange(plotlist = plots_longer[[1]], 
+# 					ncol = 2, nrow = 2, align = "h")
+
+
+```
+
+
+```{r echo=FALSE, message=F, warning=F, results="asis"}
+# for (i in names(differentiation)) {
+# 	a = ifelse(i == "Jost_D", "Jost's D", 
+# 						 ifelse(i == "Nei_Gst", "Nei's G'st", "Hendrick's G'st"))
+# 	
+# 	# knitr::kable(differentiation[[i]]$regions[
+# 	# , -ncol(differentiation[[i]]$regions)], 
+# 	# caption = a) %>% print
+# }
+# 
+# plots_longer[[2]][[1]]
+# plots_longer[[2]][[2]]
+# plots_longer[[2]][[3]]
+
+```
+
+
+```{r echo=FALSE, fig.height=6, fig.width=8, message=FALSE, warning=FALSE, results="asis"}
+library(xlsx)
+
+for (i in names(differentiation)) {
+	a = ifelse(i == "Jost_D", "Jost's D",
+						 ifelse(i == "Nei_Gst", "Nei's G'st", "Hendrick's G'st"))
+	write.xlsx(differentiation[[i]]$populations, 
+						 file = "Differentiation_metrics_population.xlsx", 
+						 sheetName=a, 
+						 col.names=TRUE, row.names=TRUE, append=FALSE)
+}
+
+# plots_longer[[3]][[1]]
+# plots_longer[[3]][[2]]
+# plots_longer[[3]][[3]]
+# 
+```
+
+### Type of land use
+
+```{r echo=FALSE, fig.height=3, fig.width=5, message=FALSE, warning=FALSE, results="asis"}
+for (i in names(differentiation)) {
+	a = ifelse(i == "Jost_D", "Jost's D", 
+						 ifelse(i == "Nei_Gst", "Nei's G'st", "Hendrick's G'st"))
+	
+	knitr::kable(differentiation[[i]]$use[
+	, -ncol(differentiation[[i]]$use)], 
+	caption = a, digits = 5) %>% print
+}
+
+# plots_longer[[4]][[1]]
+# cat("    \n\n")
+# plots_longer[[4]][[2]]
+# cat("    \n\n")
+# 
+# plots_longer[[4]][[3]]
+
+```
+
+## UPGMA 
+
+```{r UPGMA, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=10}
+library(ape)
+use_pack = c("phylogram", "pvclust")
+for (i in use_pack) {
+	#install.packages(i, dependencies = T); 
+	library(i, character.only = T)}
+
+load(file = "RData/tree_karite.RData")
+#main = "Genetic distance (proportion of loci that are different)" 
+library(dendextend)
+colors = ifelse(grepl("TCHAD", tree_karite$tip.label), 
+								"red", ifelse(grepl("CAM", tree_karite$tip.label), "black",
+															"blue"))
+plot(tree_karite, show.node.label = T, cex = 0.8, tip.color = colors,font = 1, 
+		 main = "UPGMA tree for population localities")
+mtext(side=1, line=1, adj=0, cex=0.7, "Values indicate node support using 500 samples.")
+mtext(side=1, line=2, adj=0, cex=0.7, "Calculated using Euclidean distance matrix")
+```
+

@@ -1,0 +1,387 @@
+---
+title: "Karite genetic parameters"
+author: "Karen Cristine Goncalves dos Santos"
+date: "`r Sys.Date()`"
+output: 
+
+  pdf_document:
+    fig_caption: yes
+    keep_tex: yes
+---
+
+```{r Load packages, include=FALSE}
+packages_to_use = c(
+	"poppr", "adegenet", "ape",
+	"mmod", "treemap", "tidyverse",
+	"vcfR", "pegas", "hierfstat",
+	"ggpubr")
+
+install.packages(packages_to_use, dependencies = TRUE)
+for (i in packages_to_use) { 
+	library(i, character.only = T)}
+```
+
+```{r Load data, include=FALSE}
+population_information <- read.csv(
+	file = "input data - DO NOT MODIFY/Population.csv")
+names(population_information) <- c("Taxa", "Taxa.Name", "Country",
+																	 "Region", "Location.Population",
+																	 "Type.Land.Use")
+
+population_information = 
+	population_information[- which(is.na(population_information$Taxa)),]
+
+vcf_singleton_imputed <- read.vcfR(file = "input data - DO NOT MODIFY/third_filters_m3_p60_x0_S2.singleton.unlinked.vcf.gz")
+
+countries = c("CAMEROUN" = "Cmr", "MALI" = "Mal", "TCHAD" = "Tch")
+```
+
+```{r Create genind object for all samples, include=FALSE}
+total_vcf_hierfstat = 
+		vcfR2genind(
+		vcf_singleton_imputed,
+		ind.names = population_information$Taxa.Name, 
+		pop = population_information[, 3:6] 
+	) 
+
+strata(total_vcf_hierfstat) <- population_information[, 3:6]
+setPop(total_vcf_hierfstat) <- 
+	~Country/Region/Location.Population/Type.Land.Use
+summary_vcf <- summary(total_vcf_hierfstat)
+save(total_vcf_hierfstat, file = "genind_object.RData")
+```
+
+
+```{r Fstats and Hardy-Weinberg test, eval=FALSE, include=FALSE}
+# To estimate hierarchical F-statistics with varcomp.glob, the genotype information in loci must be numeric. 
+# This information is present in the object tab from the hierfstat object.
+fstat_glob <- boot.vc(nboot = 1000,
+											levels = population_information[, 3:5], 
+											loci = total_vcf_hierfstat$tab)
+
+# Compute Weir and Cockerham estimates of Fstatistics
+# Fis = Fstat for individual/population; Fst = Fstat for pop/total
+
+wc_total <- wc(total_vcf_hierfstat)
+
+# Check if the population (whole data set) is in the Hardy-Weinberg equilibrium
+hw_test_total <- hw.test(total_vcf_hierfstat, B = 1000)
+
+```
+
+
+
+```{r Create genind object for each group, include=FALSE}
+groups <- with(population_information, 
+							 list(countries = unique(Country),
+							 		 regions = unique(Region),
+							 		 populations = unique(Location.Population),
+							 		 use = unique(Type.Land.Use)))
+
+vcf <- lapply(unlist(groups) %>% unname, function(g) {
+	inds = which(population_information$Country == g |
+							 	population_information$Region == g |
+							 	population_information$Location.Population == g |
+							 	population_information$Type.Land.Use == g) 
+	total_vcf_hierfstat[inds]
+})
+
+names(vcf) <- unlist(groups) %>% unname
+```
+
+## Differentiation
+
+
+# Stats
+
+Use _adegenet_ to calculate:
+
+| | |
+|:-|:-|
+|n|Number of individuals|
+|n.by.pop|Number of individuals in each population|
+|loc.n.all|Number of alleles per locus|
+|pop.n.all|Number of alleles per population|
+|NA.perc|Percentage of missing data|
+|Hobs|Observed heterozygosity|
+|Hexp|Expected heterozygosity|
+
+Use _mmod_ package to calculate Jost's D, Hendrick's Gst and Nei's Gst.
+
+```{r Summary stats, include=FALSE}
+summary_vcf <- list()
+
+for (g in unlist(groups) %>% unname) {
+	summary_vcf[[g]] <- summary(vcf[[g]])
+}
+
+for (i in names(groups)) {
+	if (i == "countries") {
+		setPop(total_vcf_hierfstat) <- ~Country
+	} else if (i == "regions") {
+		setPop(total_vcf_hierfstat) <- ~Country/Region
+	} else if (i == "populations") {
+		setPop(total_vcf_hierfstat) <- ~Country/Region/Location.Population
+	} else {
+		setPop(total_vcf_hierfstat) <- ~Type.Land.Use
+	}
+}
+
+```
+
+
+```{r Save summary stats, include=FALSE}
+results_sum_vcf <- data.frame(
+	Population = c(), N = c(), NA.perc = c(),
+	Bartletts_K2 = c(), pValue = c())
+
+plot_ho_he <- data.frame(
+	locus = c(), Group = c(), Hobs = c(), Hexp = c()
+	)
+
+for (g in unlist(groups) %>% unname) {
+	obs = data.frame(summary_vcf[[g]]$Hobs)
+	exp =  data.frame(summary_vcf[[g]]$Hexp)
+	names(obs) = names(exp) = g
+	obs$locus = exp$locus = names(summary_vcf[[g]]$Hexp)
+	
+	plot_ho_he = pivot_longer(obs, cols = !locus, 
+														names_to = "Group", 
+														values_to = "Hobs") %>% 
+		merge(pivot_longer(exp, cols = !locus, 
+											 names_to = "Group", 
+											 values_to = "Hexp"), 
+					by = c("locus", "Group")) %>% 
+		pivot_longer(cols = c(Hobs, Hexp), 
+								 names_to = "Parameter", 
+								 values_to = "Measure") %>%
+		rbind(plot_ho_he) %>% as.data.frame
+	
+	results_sum_vcf <- data.frame(rbind(
+		results_sum_vcf,
+		data.frame(Population = g, 
+							 N = summary_vcf[[g]]$n, 
+							 NA.perc = summary_vcf[[g]]$NA.perc,
+							 Bartletts_K2 = round(heteroHoHe[[g]]$statistic, 3), 
+							 pValue = heteroHoHe[[g]]$p.value, 
+							 row.names = g)))
+}
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+library(knitr)
+library(PopGenReport)
+rich_allele <- list()
+
+for (i in names(groups)) {
+	if (i == "countries") {
+		setPop(total_vcf_hierfstat) <- ~Country
+	} else if (i == "regions") {
+		setPop(total_vcf_hierfstat) <- ~Country/Region
+	} else if (i == "populations") {
+		setPop(total_vcf_hierfstat) <- ~Country/Region/Location.Population/Type.Land.Use
+	} else {
+		setPop(total_vcf_hierfstat) <- ~Type.Land.Use
+	}
+
+	rich_allele[[g]] <- allelic.richness(
+		data = data.frame(pop = pop(total_vcf_hierfstat), 
+											total_vcf_hierfstat$tab), 
+		diploid = T)
+}
+
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+cat("## Stats for countries\n\n")
+tables_summary = list(
+	countries = 
+		(subset(results_sum_vcf, 
+						subset = Population %in% groups[["countries"]]) %>%
+		 	select(everything()) %>%
+		 	kable(format = "simple", digits = 6, row.names = F, 
+		 				col.names = c("Group", "N individuals", "Missing data %",
+		 											"Bartletts_K^2^",
+		 											"pValue"))),
+	use = (
+		subset(results_sum_vcf, 
+					 subset = Population %in% groups[["use"]]) %>%
+			select(everything()) %>%
+			kable(format = "simple", digits = 6, row.names = F, 
+						col.names = c("Group", "N individuals", "Missing data %",
+													"Bartletts_K^2^", 
+													"pValue")))
+)
+
+plots_ho_he <- list(
+	countries = 
+		(subset(plot_ho_he, 
+						subset = Group %in% groups[["countries"]]) %>%
+		 	ggplot(aes(Group, Measure, fill = Parameter)) + 
+		 	geom_violin(position = "dodge") +
+		 	labs(title = "Countries") +
+		 	scale_y_continuous(name  = "Heterozygosity")),
+	use = 
+		(subset(plot_ho_he, 
+						subset = Group %in% groups$use) %>%
+		 	ggplot(aes(Group, Measure, fill = Parameter)) + 
+		 	geom_violin(position = "dodge") +
+		 	scale_y_continuous(name = "Heterozygosity") +
+		 	labs(title = "Land use") +
+		 	theme(axis.text.x = element_text(angle = 15, hjust = 1),
+		 				legend.position = "bottom")
+		)
+)
+
+cat("\n\n## Stats for types of land use\n\n")
+
+
+for (i in groups$countries) {
+	regions = groups$regions[groups$regions %in% 
+													 	population_information$Region[
+													 		population_information$Country == i]]
+	
+	cat("  \n\n##", i, "\n\n  ")
+	cat("  \n\n### Stats for regions \n\n  ")
+	tables_summary[[i]][["regions"]] = 
+		(subset(results_sum_vcf, 
+						subset = Population %in% regions) %>%
+		 	select(everything()) %>%
+		 	kable(format = "simple", digits = 6, row.names = F, 
+		 				col.names = c("Group", "N individuals", "Missing data %",
+		 											"Bartletts_K^2^", 
+		 											"pValue")))
+	
+	
+	
+	plots_ho_he[[i]][["regions"]] = 
+		subset(plot_ho_he, 
+					 subset = Group %in% regions) %>%
+		ggplot(aes(Group, Measure, fill = Parameter)) +
+		geom_boxplot(position = "dodge") +
+		labs(title = i) +
+		scale_y_continuous(name = "Heterozygosity") +
+		theme(axis.text.x = element_text(angle = 15, hjust = 1),
+					legend.position = "bottom")
+	
+	if (i == "MALI") {next}
+	
+	pops = groups$populations[groups$populations %in% 
+															population_information$Location.Population[
+																population_information$Country == i]]
+	
+	cat("  \n\n### Stats for 'populations'\n\n  ")
+	
+	tables_summary[[i]][["pops"]] = 
+		subset(results_sum_vcf, subset = Population %in% pops) %>%
+		select(everything()) %>%
+		kable(format = "simple", digits = 6, row.names = F, 
+					col.names = c("Group", "N individuals", "Missing data %",
+												"Bartletts_K^2^",  
+												"pValue"))
+	
+	plots_ho_he[[i]][["pops"]] = 
+		subset(plot_ho_he, subset = Group %in% pops) %>%
+		ggplot(aes(Group, Measure, fill = Parameter)) +
+		geom_boxplot(position = "dodge") +
+		labs(title = i) +
+		scale_y_continuous(name = "Heterozygosity") +
+		theme(axis.text.x = element_text(angle = 15, hjust = 1),
+					legend.position = "bottom")
+	
+}
+
+```
+
+# hierfstat::basic.stats
+
+
+```{r hierfstat object, message=FALSE, warning=FALSE, include=FALSE}
+# Use hierstat to calculate:
+# Ho - observed heterozygosity
+# Hs - mean genetic diversity within each population for each locus
+# Fis - inbreeding coefficient
+
+vcf_stat <- basic_stats <- list()
+for (g in unlist(groups) %>% unname) {
+	vcf_stat[[g]] <- hierfstat::genind2hierfstat(vcf[[g]])
+	
+	basic_stats[[g]] <- basic.stats(vcf_stat[[g]])
+}
+
+```
+
+
+```{r hierfstat statistics prep, message=FALSE, warning=FALSE, include=FALSE}
+basic_stats_print =
+	data.frame(
+		acronym = c("Ho", "Hs", "Ht", "Dst", "Htp", 
+								"Dstp", "Fst", "Fstp", "Fis", "Dest"), 
+		variable = c("Heterozygosity within population",
+								 "Genetic diversity within population",
+								 "Overall gene diversity",
+								 "Gene diversity among samples",
+								 "Corrected Ht",
+								 "Corrected Dst",
+								 "Fixation index",
+								 "Corrected Fst",
+								 "Inbreeding coefficient per overall loci",
+								 "Measure of population differentiation"))
+
+for (g in unlist(groups) %>% unname) {
+	basic_stats_print$newpop = unname(basic_stats[[g]]$overall)
+	names(basic_stats_print)[ncol(basic_stats_print)] <- 
+		g
+}
+```
+
+
+```{r Print hierfstat statistics, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, results='asis'}
+library(knitr)
+
+new_basicstats <- list(
+	countries = 
+		kable(basic_stats_print[, c("acronym", "variable", groups[["countries"]])], 
+					format = "simple",
+					col.names = c("", "", groups[["countries"]])),
+	use = basic_stats_print[, groups[["use"]]] %>% t() %>% 
+		as.data.frame(row.names = groups[["use"]]) %>%
+		kable(row.names = T,
+					format = "simple",
+					col.names = basic_stats_print$acronym)
+	
+)
+
+
+for (i in groups$countries) {
+	regions = groups$regions[groups$regions %in% 
+													 	population_information$Region[
+													 		population_information$Country == i]]
+	new_basicstats[[i]][["regions"]] = 
+		basic_stats_print[, regions] %>% t() %>% 
+		as.data.frame(row.names = regions) %>%
+		kable(row.names = T,
+					format = "simple",
+					col.names = basic_stats_print$acronym)
+	
+	if (i == "MALI") {next}
+	pops = groups$populations[groups$populations %in% 
+															population_information$Location.Population[
+																population_information$Country == i]]
+	
+	new_basicstats[[i]][["pops"]] = 
+		basic_stats_print[basic_stats_print$acronym %in% 
+					 	c("Ho", "Hs", "Ht", "Dst", "Fst", "Fis"), pops] %>% 
+		t() %>% as.data.frame(row.names = pops) %>%
+		kable(row.names = T,
+					format = "simple",
+					col.names = c("Ho", "Hs", "Ht", "Dst", "Fst", "Fis"))
+}
+
+```
+
+```{r}
+save(tables_summary, plots_ho_he, basic_stats_print, 
+		 groups, new_basicstats, population_information, 
+		 file = "report_plots_tables.RData")
+```

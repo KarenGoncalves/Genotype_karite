@@ -1,0 +1,395 @@
+---
+title: "Karite genetic parameters"
+author: "Karen Cristine Goncalves dos Santos"
+date: "`r Sys.Date()`"
+output: 
+
+  pdf_document:
+    fig_caption: yes
+    keep_tex: yes
+---
+
+```{r Load packages, include=FALSE}
+packages_to_use = c(
+	"poppr", "mmod", "adegenet", "ape", "LEA",
+	"treemap", "tidyverse",
+	"vcfR", "pegas", "hierfstat",
+	"ggpubr")
+
+# install.packages(packages_to_use,
+# 								 dependencies = TRUE)
+for (i in packages_to_use) { 
+	library(i, character.only = T)}
+```
+
+```{r Load pop info, include=FALSE}
+population_information <- read.csv(file = "input data - DO NOT MODIFY/Population.csv")
+names(population_information) <- c("Taxa", "Taxa.Name", "Country",
+																	 "Region", "Location.Population",
+																	 "Type.Land.Use")
+
+population_information = 
+	population_information[- which(is.na(population_information$Taxa)),]
+
+countries = c("CAMEROUN" = "Cmr", "MALI" = "Mal", "TCHAD" = "Tch")
+groups <- with(population_information, 
+							 list(countries = unique(Country),
+							 		 regions = unique(Region),
+							 		 populations = unique(Location.Population),
+							 		 use = unique(Type.Land.Use)))
+```
+
+
+```{r Load data, include=FALSE}
+vcf <- read.vcfR("input data - DO NOT MODIFY/third_filters_m3_p60_x0_S2.singleton.unlinked.vcf")
+genind <- vcfR2genind(vcf, sep = "/")
+
+strata(genind) <- population_information
+setPop(genind) <-
+	~Country/Region/Location.Population
+
+```
+
+```{r Pairwise Fst}
+pwfst <- genet.dist(genind, diploid = T, method = "Fst")
+nj_fst <- pwfst %>% nj()
+nj_fst$edge.length <- abs(nj_fst$edge.length)
+nj_fst$tip.label <- 
+	levels(pop(genind)) %>%
+	gsub(pattern = "_", replacement = " - ")
+
+pwfst_df <- as.matrix(pwfst) %>% 
+	as.data.frame()
+names(pwfst_df) <- rownames(pwfst_df) <- 
+	levels(pop(genind))
+
+dend_pwfst <- hclust(pwfst_df %>% as.matrix %>% as.dist)
+pops_countries <- dend_pwfst$labels %>% 
+	str_split(pattern = "_") %>% 
+	lapply(function(x) x[1]) %>%
+	unlist %>% as.factor
+```
+
+
+```{r Pairwise Fst dend plot}
+library(ggdendro)
+
+ggdend_pwfst <- as.dendrogram(dend_pwfst) %>%
+	dendro_data()
+
+ggdend_pwfst$labels$label <- 
+	gsub("_", " - ", ggdend_pwfst$labels$label)
+
+ggdend_pwfst$labels$country <- 
+	ggdend_pwfst$labels$label %>% str_split(pattern = " ") %>%
+	lapply(function(x) x[1]) %>% unlist %>% as.factor 
+
+ggplot() +
+    geom_segment(data = ggdend_pwfst$segments, 
+                 aes(x = y, y = x, 
+                     xend = yend, yend = xend))+
+    geom_text(data = ggdend_pwfst$labels, 
+              aes(y, x, label = label, color = country),
+              hjust = 1.1, size = 3) +
+    scale_x_continuous(
+    	limits = c(-0.25, 0.4), 
+    	breaks = seq(0, 0.35, 0.05)) + 
+	theme_minimal() + 
+	theme(axis.text.y = element_blank(), 
+				panel.grid = element_blank()) + 
+	labs(x = "Pairwise Fst", y = "")
+
+knitr::kable(pwfst_df, digits = 3)
+```
+
+```{r summary per country}
+country_genind <- genind
+setPop(country_genind) <-
+	~Country
+
+genetic_summary_countries <- 
+	lapply(groups$countries, function(x) {
+	inds <- pop(country_genind) == x
+	
+	basic.stats(country_genind[inds], diploid = T)
+})
+
+names(genetic_summary_countries) <- groups$countries
+
+sapply(groups$countries, function(x) {
+	genetic_summary_countries[[x]]$overall[c("Ho", "Hs", "Ht", "Fis")]
+}) %>% t() %>% data.frame()
+
+exp_het_countries <- adegenet::Hs(country_genind, 
+																	pop = pop(country_genind))
+```
+
+
+```{r summary per pop}
+genetic_summary <- lapply(levels(pop(genind)), function(x) {
+	inds <- pop(genind) == x
+	
+	basic.stats(genind[inds], diploid = T)
+})
+names(genetic_summary) <- levels(pop(genind))
+
+
+gen_summ_pops <- 
+	sapply(levels(pop(genind)), function(x) {
+		genetic_summary[[x]]$overall[c("Ho", "Hs", "Ht", "Fis")]
+	}) %>% t() %>% data.frame()
+
+exp_het <- adegenet::Hs(genind, pop = pop(genind))
+exp_het_countries_mean <- 
+	sapply(groups$countries, function(x) {
+	a = exp_het[grep(x, levels(pop(genind)))] 
+	c(mean = mean(a), std = sd(a))
+})
+
+fis_countries_mean <- sapply(groups$countries, function(x) {
+	a = gen_summ_pops$Fis[grep(x, levels(pop(genind)))] 
+	c(mean = mean(a), std = sd(a))
+})
+
+```
+
+```{r Amova with Mali}
+amova_mali <- poppr.amova(x = genind, within = F,
+													hier = ~Country/Region/Location.Population,
+													threads = parallel::detectCores(), cutoff = 0.95
+)
+(rand_amova_mali <- randtest(amova_mali, nrepet = 999))
+
+plot(rand_amova_mali)
+
+knitr::kable(amova_mali$results, caption = 
+						 	"Result AMOVA including the Mali population.\
+						 Hierarchy: _Country - Region - Location.Population_.\
+						 Sample = Location.Population")
+
+knitr::kable(amova_mali$componentsofcovariance, caption = 
+						 	"Components of covariance from AMOVA including the Mali population.\
+						 Hierarchy: _Country - Region - Location.Population_.\
+						 Sample = Location.Population")
+```
+
+
+```{r Amova without Mali}
+exclude_mali <- population_information$Taxa.Name[
+	population_information$Country != "MALI"]
+
+genind_nomali <- genind[exclude_mali]
+strata(genind_nomali) <- population_information[
+	population_information$Country != "MALI",] %>%
+	apply(MARGIN = 2, FUN = as.character) %>% as.data.frame
+setPop(genind_nomali) <-
+	~Country/Region/Location.Population
+
+amova_nomali <- poppr.amova(x = genind_nomali, within = F,
+														hier = ~Country/Region/Location.Population,
+														threads = parallel::detectCores(), cutoff = 0.95
+)
+(rand_amova_nomali <- randtest(amova_nomali, nrepet = 999))
+
+plot(rand_amova_nomali)
+
+knitr::kable(amova_nomali$results, caption = 
+						 	"Result AMOVA excluding the Mali population.\
+						 Hierarchy: _Country - Region - Location.Population_.\
+						 Sample = Location.Population")
+
+```
+
+```{r glPCA}
+genlight <- vcfR2genlight(vcf, n.cores = parallel::detectCores())
+
+glPCA_result <- glPca(
+	genlight, parallel = T, nf = 20,
+	n.cores = parallel::detectCores()
+)
+
+glPCA_df <- data.frame(
+	Taxa.Name = rownames(glPCA_result$scores),
+	glPCA_result$scores
+) %>% merge(population_information[, -1], by = "Taxa.Name") 
+
+#devtools::install_github("jaredhuling/jcolors")
+library("jcolors")
+
+ggplot(glPCA_df, 
+			 aes(PC1, PC2,shape = Country, color = Region)) +
+	geom_point() + scale_color_jcolors(palette = "pal8")
+```
+# DAPC
+
+## DAPC using clusters obtained with find.clusters function
+
+```{r DAPC with find.clusters, echo=FALSE}
+theme_set(theme_bw())
+strata(genind) <- population_information
+setPop(genind) <-
+	~Country/Region/Location.Population
+
+maxK <- 20
+myMat <- matrix(nrow=10, ncol=maxK)
+colnames(myMat) <- 1:ncol(myMat)
+for(i in 1:nrow(myMat)){
+  grp <- find.clusters(genind, n.pca = 490, 
+  										 choose.n.clust = FALSE,  max.n.clust = maxK)
+  myMat[i,] <- grp$Kstat
+}
+myMat <- as.data.frame(myMat)
+myMat$Group = 1:nrow(myMat)
+my_df <- pivot_longer(myMat, cols = !Group, names_to = "K", values_to = "BIC")
+my_df$Group <- factor(my_df$Group, levels = 1:10)
+my_df$K <- factor(my_df$K, levels = 1:20)
+head(my_df)
+
+p1 <- ggplot(my_df, aes(x = K, y = BIC))
+p1 <- p1 + geom_line() + stat_smooth()
+p1 <- p1 + theme_bw()
+p1 <- p1 + xlab("Number of groups (K)")
+p1
+
+mean_BIC <- apply(myMat[, -21], 2, mean)
+nK = (mean_BIC == min(mean_BIC)) %>% which
+
+
+```
+
+
+```{r DAPC with find.clusters, echo=FALSE}
+clusters_karite <- find.clusters(
+    genind, n.pca = 490, stat = "BIC",
+    method = "ward", n.clust = nK)
+
+table(pop(genind), clusters_karite$grp)
+											 
+table.value(
+	table(population_information$Country, clusters_karite$grp),
+	col.labels = paste("K ", levels(clusters_karite$grp)))
+
+dapc_countries <- dapc(genind, 
+											 clusters_karite$grp, 
+											 n.pca = 90, n.da = 40)
+
+
+dapc_da <- data.frame(
+	population_information[, 2:5],
+	clusters = dapc_countries$grp,
+	dapc_countries$ind.coord
+)
+```
+
+
+```{r DAPC scatter plot, echo=FALSE}
+library(gridExtra)
+library(RColorBrewer)
+library(pals)
+
+theme_set(theme_bw())
+scatter_dapc <- list(
+	eigen = (data.frame(
+		DAs = factor(paste0("Discriminant function ", 1:13),
+								 levels = paste0("Discriminant function ", 1:13)),
+		eigenvalues = dapc_countries$eig) %>%
+			ggplot(aes(DAs, eigenvalues, fill = eigenvalues)) +
+			geom_col() + 
+			labs(x = "", y = "Eigenvalues", 
+					 title = "Eigenvalues of retained discriminant functions") +
+			scale_y_continuous(breaks = seq(0, 6000, 1000)) +
+			theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
+						legend.position = "none")
+	), 
+	ld1_ld2 =
+		(ggplot(dapc_da, aes(LD1, LD2, color = clusters)) + 
+		 	geom_point(aes(shape = Country)) + 
+		 	stat_ellipse(aes(color = clusters)) +
+		 	labs(x = "DAPC LD1", y = "DAPC LD2") +
+		 	scale_color_manual(values = pals::glasbey(nK))),
+	ld1_ld3 =
+		(ggplot(dapc_da, aes(LD1, LD3, color = clusters)) + 
+		 	geom_point(aes(shape = Country)) + 
+		 	stat_ellipse(aes(color = clusters)) +
+		 	labs(x = "DAPC LD1", y = "DAPC LD3") +
+		 	scale_color_manual(values = pals::glasbey(nK))),
+	ld2_ld3 =
+		(ggplot(dapc_da, aes(LD2, LD3, color = clusters)) + 
+		 	geom_point(aes(shape = Country)) + 
+		 	stat_ellipse(aes(color = clusters)) +
+		 	labs(x = "DAPC LD2", y = "DAPC LD3") +
+		 	scale_color_manual(values = pals::glasbey(nK)))
+)
+
+ggsave(
+   filename = paste0("Scatters_DAPC_findclusters", Sys.Date(), ".pdf"), 
+   plot = marrangeGrob(scatter_dapc, nrow=1, ncol=1)
+)
+
+```
+
+
+
+```{r Structure-like plot - findclusters, fig.width=13.9, fig.height=7.21}
+setPop(genind) <- ~Country/Region/Location.Population
+membership_probability = data.frame(
+	individuals = rownames(dapc_countries[["posterior"]]),
+	dapc_countries[["posterior"]]
+) %>% merge(
+	data.frame(individuals = population_information$Taxa.Name,
+						 pops = as.character(pop(genind))),
+	by = "individuals") %>%
+	pivot_longer(
+	-c(individuals, pops), names_to = "Clusters", 
+	values_to = "probability", names_prefix = "X")
+
+membership_probability$individuals <- 
+	factor(membership_probability$individuals,
+				 levels = population_information$Taxa.Name[
+				 	order(population_information$Taxa.Name)])
+
+mem_prob_pops <- lapply(levels(pop(genind)), function(i) {
+		title = paste0(
+			i, "\nN=", which(pop(genind) == i) %>% length
+		)
+		filter(membership_probability, pops == i) %>%
+		ggplot(
+       aes(individuals, probability, fill = Clusters)) +
+    geom_col() + labs(x = "", y = "",
+    									title = title) +
+    scale_fill_manual(values = glasbey(nK), breaks = 1:nK) +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+    			axis.title.y = element_text(vjust = 0.5),
+          panel.grid = element_blank(), 
+    			plot.title = element_text(hjust = 0.5)
+    			)
+	})
+
+plot_groups <- list(
+	ggarrange(plotlist = lapply(1:6, function(i) {mem_prob_pops[[i]]}),
+					ncol = 2, nrow = 3, labels = "AUTO", 
+					common.legend = T, legend = "bottom"),
+	ggarrange(plotlist = lapply(7:12, function(i) {mem_prob_pops[[i]]}),
+					ncol = 2, nrow = 3, labels = "AUTO", 
+					common.legend = T, legend = "bottom"),
+	ggarrange(plotlist = lapply(13:18, function(i) {mem_prob_pops[[i]]}),
+					ncol = 2, nrow = 3, labels = "AUTO", 
+					common.legend = T, legend = "bottom"),
+	ggarrange(plotlist = lapply(19:21, function(i) {mem_prob_pops[[i]]}),
+					ncol = 1, nrow = 3, labels = "AUTO", 
+					common.legend = T, legend = "bottom"))
+library(gridExtra)
+
+ggsave(
+	filename = paste0("Cluster_membership_DAPC_DA10_PC90_k11_", Sys.Date(), ".pdf"), 
+   plot = marrangeGrob(plot_groups, nrow=1, ncol=1)
+)
+
+```
+
+```{r Individual distance}
+ind_dist <- diss.dist(genind, percent = FALSE, mat = T)
+
+```
+
