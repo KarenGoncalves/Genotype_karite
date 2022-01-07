@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1641563904669.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "131633180",
+    "id" : "59A08FF3",
+    "lastKnownWriteTime" : 1641564679,
+    "last_content_update" : 1641564679074,
+    "path" : "~/Kevin/Genotype_karite/scripts/analysis_paper_reference_snps.Rmd",
+    "project_path" : "scripts/analysis_paper_reference_snps.Rmd",
+    "properties" : {
+        "cursorPosition" : "42,79",
+        "scrollLine" : "36"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
