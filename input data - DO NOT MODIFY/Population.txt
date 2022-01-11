@@ -1,0 +1,491 @@
+�..Taxa	Taxa.Name	Pays	Region	Localite.population.	Types.d.utilisations.des.terres
+416	TchZ1-pala_ch-pl1-A1-1	TCHAD	Mayo-kebbi	Pala	Champ
+417	TchZ1-pala_ch-pl1-B1-2	TCHAD	Mayo-kebbi	Pala	Champ
+418	TchZ1-pala_ch-pl1-B2-10	TCHAD	Mayo-kebbi	Pala	Champ
+419	TchZ1-pala_ch-pl1-B3-18	TCHAD	Mayo-kebbi	Pala	Champ
+420	TchZ1-pala_ch-pl1-B4-26	TCHAD	Mayo-kebbi	Pala	Champ
+421	TchZ1-pala_ch-pl1-C1-3	TCHAD	Mayo-kebbi	Pala	Champ
+422	TchZ1-pala_ch-pl1-C2-11	TCHAD	Mayo-kebbi	Pala	Champ
+423	TchZ1-pala_ch-pl1-C3-19	TCHAD	Mayo-kebbi	Pala	Champ
+424	TchZ1-pala_ch-pl1-C4-27	TCHAD	Mayo-kebbi	Pala	Champ
+425	TchZ1-pala_ch-pl1-D1-4	TCHAD	Mayo-kebbi	Pala	Champ
+426	TchZ1-pala_ch-pl1-D2-12	TCHAD	Mayo-kebbi	Pala	Champ
+427	TchZ1-pala_ch-pl1-D3-20	TCHAD	Mayo-kebbi	Pala	Champ
+428	TchZ1-pala_ch-pl1-E1-5	TCHAD	Mayo-kebbi	Pala	Champ
+429	TchZ1-pala_ch-pl1-E2-13	TCHAD	Mayo-kebbi	Pala	Champ
+430	TchZ1-pala_ch-pl1-E3-21	TCHAD	Mayo-kebbi	Pala	Champ
+431	TchZ1-pala_ch-pl1-F1-6	TCHAD	Mayo-kebbi	Pala	Champ
+432	TchZ1-pala_ch-pl1-F2-14	TCHAD	Mayo-kebbi	Pala	Champ
+433	TchZ1-pala_ch-pl1-F3-22	TCHAD	Mayo-kebbi	Pala	Champ
+434	TchZ1-pala_ch-pl1-G1-7	TCHAD	Mayo-kebbi	Pala	Champ
+435	TchZ1-pala_ch-pl1-G2-15	TCHAD	Mayo-kebbi	Pala	Champ
+436	TchZ1-pala_ch-pl1-G3-23	TCHAD	Mayo-kebbi	Pala	Champ
+437	TchZ1-pala_ch-pl1-H1-8	TCHAD	Mayo-kebbi	Pala	Champ
+438	TchZ1-pala_ch-pl1-H2-16	TCHAD	Mayo-kebbi	Pala	Champ
+439	TchZ1-pala_ch-pl1-H3-24	TCHAD	Mayo-kebbi	Pala	Champ
+440	TchZ1-peni_ch-pl1-A5-37	TCHAD	Mandoul	Peni	Champ
+441	TchZ1-peni_ch-pl1-A6-46	TCHAD	Mandoul	Peni	Champ
+442	TchZ1-peni_ch-pl1-A7-54	TCHAD	Mandoul	Peni	Champ
+443	TchZ1-peni_ch-pl1-B5-38	TCHAD	Mandoul	Peni	Champ
+444	TchZ1-peni_ch-pl1-B6-47	TCHAD	Mandoul	Peni	Champ
+445	TchZ1-peni_ch-pl1-B7-55	TCHAD	Mandoul	Peni	Champ
+446	TchZ1-peni_ch-pl1-C5-39	TCHAD	Mandoul	Peni	Champ
+447	TchZ1-peni_ch-pl1-C7-57	TCHAD	Mandoul	Peni	Champ
+448	TchZ1-peni_ch-pl1-D4-31	TCHAD	Mandoul	Peni	Champ
+449	TchZ1-peni_ch-pl1-D5-41	TCHAD	Mandoul	Peni	Champ
+450	TchZ1-peni_ch-pl1-D6-49	TCHAD	Mandoul	Peni	Champ
+451	TchZ1-peni_ch-pl1-D7-58	TCHAD	Mandoul	Peni	Champ
+452	TchZ1-peni_ch-pl1-E5-42	TCHAD	Mandoul	Peni	Champ
+453	TchZ1-peni_ch-pl1-E6-50	TCHAD	Mandoul	Peni	Champ
+454	TchZ1-peni_ch-pl1-E7-59	TCHAD	Mandoul	Peni	Champ
+455	TchZ1-peni_ch-pl1-F4-34	TCHAD	Mandoul	Peni	Champ
+456	TchZ1-peni_ch-pl1-F5-43	TCHAD	Mandoul	Peni	Champ
+457	TchZ1-peni_ch-pl1-F6-51	TCHAD	Mandoul	Peni	Champ
+458	TchZ1-peni_ch-pl1-F7-60	TCHAD	Mandoul	Peni	Champ
+459	TchZ1-peni_ch-pl1-G4-35	TCHAD	Mandoul	Peni	Champ
+460	TchZ1-peni_ch-pl1-G5-44	TCHAD	Mandoul	Peni	Champ
+461	TchZ1-peni_ch-pl1-G6-52	TCHAD	Mandoul	Peni	Champ
+462	TchZ1-peni_ch-pl1-H4-36	TCHAD	Mandoul	Peni	Champ
+463	TchZ1-peni_ch-pl1-H5-45	TCHAD	Mandoul	Peni	Champ
+464	TchZ1-peni_ch-pl1-H6-53	TCHAD	Mandoul	Peni	Champ
+465	TchZ1-peni_fo-pl1-A8-63	TCHAD	Mandoul	Peni	Foret
+466	TchZ1-peni_fo-pl1-B8-65	TCHAD	Mandoul	Peni	Foret
+467	TchZ1-peni_fo-pl1-C8-66	TCHAD	Mandoul	Peni	Foret
+468	TchZ1-peni_fo-pl1-D8-67	TCHAD	Mandoul	Peni	Foret
+400	TchZ1-mayo_ja-pl1-B11-92	TCHAD	Logone Oriental	Mayongo	Jachère
+401	TchZ1-mayo_ja-pl1-G10-89	TCHAD	Logone Oriental	Mayongo	Jachère
+402	TchZ1-mayo_ja-pl1-H10-90	TCHAD	Logone Oriental	Mayongo	Jachère
+403	TchZ1-mayo_ve-pl1-A9-73	TCHAD	Logone Oriental	Mayongo	Verger
+404	TchZ1-mayo_ve-pl1-B10-83	TCHAD	Logone Oriental	Mayongo	Verger
+405	TchZ1-mayo_ve-pl1-B9-74	TCHAD	Logone Oriental	Mayongo	Verger
+406	TchZ1-mayo_ve-pl1-C9-75	TCHAD	Logone Oriental	Mayongo	Verger
+407	TchZ1-mayo_ve-pl1-D9-76	TCHAD	Logone Oriental	Mayongo	Verger
+408	TchZ1-mayo_ve-pl1-E10-86	TCHAD	Logone Oriental	Mayongo	Verger
+409	TchZ1-mayo_ve-pl1-E8-68	TCHAD	Logone Oriental	Mayongo	Verger
+410	TchZ1-mayo_ve-pl1-E9-77	TCHAD	Logone Oriental	Mayongo	Verger
+411	TchZ1-mayo_ve-pl1-F10-87	TCHAD	Logone Oriental	Mayongo	Verger
+412	TchZ1-mayo_ve-pl1-F8-69	TCHAD	Logone Oriental	Mayongo	Verger
+413	TchZ1-mayo_ve-pl1-F9-78	TCHAD	Logone Oriental	Mayongo	Verger
+414	TchZ1-mayo_ve-pl1-G8-70	TCHAD	Logone Oriental	Mayongo	Verger
+415	TchZ1-mayo_ve-pl1-H8-71	TCHAD	Logone Oriental	Mayongo	Verger
+364	TchZ1-kana_ve-pl1-A12-99	TCHAD	Logone Occidental	Kana	Verger
+365	TchZ1-kana_ve-pl1-B12-100	TCHAD	Logone Occidental	Kana	Verger
+366	TchZ1-kana_ve-pl1-C11-93	TCHAD	Logone Occidental	Kana	Verger
+367	TchZ1-kana_ve-pl1-C12-101	TCHAD	Logone Occidental	Kana	Verger
+368	TchZ1-kana_ve-pl1-D11-94	TCHAD	Logone Occidental	Kana	Verger
+369	TchZ1-kana_ve-pl1-D12-102	TCHAD	Logone Occidental	Kana	Verger
+370	TchZ1-kana_ve-pl1-E12-103	TCHAD	Logone Occidental	Kana	Verger
+371	TchZ1-kana_ve-pl1-F11-96	TCHAD	Logone Occidental	Kana	Verger
+372	TchZ1-kana_ve-pl1-F12-105	TCHAD	Logone Occidental	Kana	Verger
+373	TchZ1-kana_ve-pl1-G11-97	TCHAD	Logone Occidental	Kana	Verger
+374	TchZ1-kana_ve-pl1-G12-106	TCHAD	Logone Occidental	Kana	Verger
+375	TchZ1-kana_ve-pl2-A2-118	TCHAD	Logone Occidental	Kana	Verger
+376	TchZ1-kana_ve-pl2-B1-109	TCHAD	Logone Occidental	Kana	Verger
+377	TchZ1-kana_ve-pl2-B2-119	TCHAD	Logone Occidental	Kana	Verger
+378	TchZ1-kana_ve-pl2-C2-121	TCHAD	Logone Occidental	Kana	Verger
+379	TchZ1-kana_ve-pl2-D1-111	TCHAD	Logone Occidental	Kana	Verger
+380	TchZ1-kana_ve-pl2-F1-115	TCHAD	Logone Occidental	Kana	Verger
+381	TchZ1-kana_ve-pl2-G1-116	TCHAD	Logone Occidental	Kana	Verger
+382	TchZ1-kana_ve-pl2-H1-117	TCHAD	Logone Occidental	Kana	Verger
+469	TchZ1-tcho_ch-pl2-B3-130	TCHAD	Tandjile	Tchoua	Champ
+470	TchZ1-tcho_ch-pl2-B5-148	TCHAD	Tandjile	Tchoua	Champ
+471	TchZ1-tcho_ch-pl2-C3-131	TCHAD	Tandjile	Tchoua	Champ
+472	TchZ1-tcho_ch-pl2-C4-140	TCHAD	Tandjile	Tchoua	Champ
+473	TchZ1-tcho_ch-pl2-C5-149	TCHAD	Tandjile	Tchoua	Champ
+474	TchZ1-tcho_ch-pl2-D3-132	TCHAD	Tandjile	Tchoua	Champ
+475	TchZ1-tcho_ch-pl2-D4-141	TCHAD	Tandjile	Tchoua	Champ
+476	TchZ1-tcho_ch-pl2-D5-150	TCHAD	Tandjile	Tchoua	Champ
+477	TchZ1-tcho_ch-pl2-E3-133	TCHAD	Tandjile	Tchoua	Champ
+478	TchZ1-tcho_ch-pl2-E4-142	TCHAD	Tandjile	Tchoua	Champ
+479	TchZ1-tcho_ch-pl2-E5-151	TCHAD	Tandjile	Tchoua	Champ
+480	TchZ1-tcho_ch-pl2-F3-134	TCHAD	Tandjile	Tchoua	Champ
+481	TchZ1-tcho_ch-pl2-F4-143	TCHAD	Tandjile	Tchoua	Champ
+482	TchZ1-tcho_ch-pl2-F5-153	TCHAD	Tandjile	Tchoua	Champ
+483	TchZ1-tcho_ch-pl2-G3-135	TCHAD	Tandjile	Tchoua	Champ
+484	TchZ1-tcho_ch-pl2-G4-145	TCHAD	Tandjile	Tchoua	Champ
+485	TchZ1-tcho_ch-pl2-G5-154	TCHAD	Tandjile	Tchoua	Champ
+486	TchZ1-tcho_ch-pl2-H4-146	TCHAD	Tandjile	Tchoua	Champ
+487	TchZ1-tcho_fo-pl2-A4-138	TCHAD	Tandjile	Tchoua	Champ
+488	TchZ1-tcho_fo-pl2-B4-139	TCHAD	Tandjile	Tchoua	Foret
+489	TchZ1-tcho_fo-pl2-F2-124	TCHAD	Tandjile	Tchoua	Foret
+383	TchZ1-kemk_ch-pl2-A6-156	TCHAD	Mandoul	Kemkiam	Champ
+384	TchZ1-kemk_ch-pl2-A7-165	TCHAD	Mandoul	Kemkiam	Champ
+385	TchZ1-kemk_ch-pl2-A8-174	TCHAD	Mandoul	Kemkiam	Champ
+386	TchZ1-kemk_ch-pl2-B6-157	TCHAD	Mandoul	Kemkiam	Champ
+387	TchZ1-kemk_ch-pl2-B7-166	TCHAD	Mandoul	Kemkiam	Champ
+388	TchZ1-kemk_ch-pl2-B8-175	TCHAD	Mandoul	Kemkiam	Champ
+389	TchZ1-kemk_ch-pl2-C6-158	TCHAD	Mandoul	Kemkiam	Champ
+390	TchZ1-kemk_ch-pl2-C7-167	TCHAD	Mandoul	Kemkiam	Champ
+391	TchZ1-kemk_ch-pl2-D6-159	TCHAD	Mandoul	Kemkiam	Champ
+392	TchZ1-kemk_ch-pl2-D7-169	TCHAD	Mandoul	Kemkiam	Champ
+393	TchZ1-kemk_ch-pl2-E6-161	TCHAD	Mandoul	Kemkiam	Champ
+394	TchZ1-kemk_ch-pl2-F6-162	TCHAD	Mandoul	Kemkiam	Champ
+395	TchZ1-kemk_ch-pl2-G6-163	TCHAD	Mandoul	Kemkiam	Champ
+396	TchZ1-kemk_ch-pl2-G7-172	TCHAD	Mandoul	Kemkiam	Champ
+397	TchZ1-kemk_ch-pl2-H5-155	TCHAD	Mandoul	Kemkiam	Champ
+398	TchZ1-kemk_ch-pl2-H6-164	TCHAD	Mandoul	Kemkiam	Champ
+399	TchZ1-kemk_ch-pl2-H7-173	TCHAD	Mandoul	Kemkiam	Champ
+341	TchZ1-kaga_ch-pl2-D10-196	TCHAD	Moyen-Chari	Kagala	Champ
+342	TchZ1-kaga_ch-pl2-E10-197	TCHAD	Moyen-Chari	Kagala	Champ
+343	TchZ1-kaga_ch-pl2-F10-198	TCHAD	Moyen-Chari	Kagala	Champ
+344	TchZ1-kaga_ch-pl2-G10-199	TCHAD	Moyen-Chari	Kagala	Champ
+345	TchZ1-kaga_ja-pl2-A10-193	TCHAD	Moyen-Chari	Kagala	Jachère
+346	TchZ1-kaga_ja-pl2-A11-202	TCHAD	Moyen-Chari	Kagala	Jachère
+347	TchZ1-kaga_ja-pl2-A9-185	TCHAD	Moyen-Chari	Kagala	Jachère
+348	TchZ1-kaga_ja-pl2-B10-194	TCHAD	Moyen-Chari	Kagala	Jachère
+349	TchZ1-kaga_ja-pl2-B9-186	TCHAD	Moyen-Chari	Kagala	Jachère
+350	TchZ1-kaga_ja-pl2-C10-195	TCHAD	Moyen-Chari	Kagala	Jachère
+351	TchZ1-kaga_ja-pl2-C8-178	TCHAD	Moyen-Chari	Kagala	Jachère
+352	TchZ1-kaga_ja-pl2-C9-187	TCHAD	Moyen-Chari	Kagala	Jachère
+353	TchZ1-kaga_ja-pl2-D8-179	TCHAD	Moyen-Chari	Kagala	Jachère
+354	TchZ1-kaga_ja-pl2-D9-188	TCHAD	Moyen-Chari	Kagala	Jachère
+355	TchZ1-kaga_ja-pl2-E8-180	TCHAD	Moyen-Chari	Kagala	Jachère
+356	TchZ1-kaga_ja-pl2-E9-189	TCHAD	Moyen-Chari	Kagala	Jachère
+357	TchZ1-kaga_ja-pl2-F8-181	TCHAD	Moyen-Chari	Kagala	Jachère
+358	TchZ1-kaga_ja-pl2-F9-190	TCHAD	Moyen-Chari	Kagala	Jachère
+359	TchZ1-kaga_ja-pl2-G8-182	TCHAD	Moyen-Chari	Kagala	Jachère
+360	TchZ1-kaga_ja-pl2-G9-191	TCHAD	Moyen-Chari	Kagala	Jachère
+361	TchZ1-kaga_ja-pl2-H10-201	TCHAD	Moyen-Chari	Kagala	Jachère
+362	TchZ1-kaga_ja-pl2-H8-183	TCHAD	Moyen-Chari	Kagala	Jachère
+363	TchZ1-kaga_ja-pl2-H9-192	TCHAD	Moyen-Chari	Kagala	Jachère
+26	CmrZ2-kani_ca-pl2-B12-213	CAMEROUN	Extreme-Nord	Mayo-kani	Champ agricole
+27	CmrZ2-kani_ca-pl2-C11-204	CAMEROUN	Extreme-Nord	Mayo-kani	Champ agricole
+28	CmrZ2-kani_ca-pl2-D11-205	CAMEROUN	Extreme-Nord	Mayo-kani	Champ agricole
+29	CmrZ2-kani_ca-pl2-D12-215	CAMEROUN	Extreme-Nord	Mayo-kani	Champ agricole
+30	CmrZ2-kani_ca-pl2-E11-206	CAMEROUN	Extreme-Nord	Mayo-kani	Champ agricole
+31	CmrZ2-kani_ca-pl2-G11-210	CAMEROUN	Extreme-Nord	Mayo-kani	Champ agricole
+32	CmrZ2-kani_ca-pl2-G12-219	CAMEROUN	Extreme-Nord	Mayo-kani	Champ agricole
+33	CmrZ2-kani_ca-pl2-H11-211	CAMEROUN	Extreme-Nord	Mayo-kani	Champ agricole
+34	CmrZ2-kani_ca-pl3-A1-221	CAMEROUN	Extreme-Nord	Mayo-kani	Champ agricole
+35	CmrZ2-kani_ca-pl3-B1-222	CAMEROUN	Extreme-Nord	Mayo-kani	Champ agricole
+36	CmrZ2-kani_ca-pl3-C1-223	CAMEROUN	Extreme-Nord	Mayo-kani	Champ agricole
+37	CmrZ2-kani_ca-pl3-D1-224	CAMEROUN	Extreme-Nord	Mayo-kani	Champ agricole
+38	CmrZ2-kani_ca-pl3-F1-226	CAMEROUN	Extreme-Nord	Mayo-kani	Champ agricole
+39	CmrZ2-kani_ca-pl3-G1-227	CAMEROUN	Extreme-Nord	Mayo-kani	Champ agricole
+40	CmrZ2-kani_ca-pl3-H1-228	CAMEROUN	Extreme-Nord	Mayo-kani	Champ agricole
+41	CmrZ2-kani_sn-pl3-A3-238	CAMEROUN	Extreme-Nord	Mayo-kani	Savane naturelle
+42	CmrZ2-kani_sn-pl3-B2-230	CAMEROUN	Extreme-Nord	Mayo-kani	Savane naturelle
+43	CmrZ2-kani_sn-pl3-B3-239	CAMEROUN	Extreme-Nord	Mayo-kani	Savane naturelle
+44	CmrZ2-kani_sn-pl3-C2-231	CAMEROUN	Extreme-Nord	Mayo-kani	Savane naturelle
+45	CmrZ2-kani_sn-pl3-C3-241	CAMEROUN	Extreme-Nord	Mayo-kani	Savane naturelle
+46	CmrZ2-kani_sn-pl3-D2-233	CAMEROUN	Extreme-Nord	Mayo-kani	Savane naturelle
+47	CmrZ2-kani_sn-pl3-E2-234	CAMEROUN	Extreme-Nord	Mayo-kani	Savane naturelle
+48	CmrZ2-kani_sn-pl3-F3-252	CAMEROUN	Extreme-Nord	Mayo-kani	Savane naturelle
+49	CmrZ2-kani_sn-pl3-G2-236	CAMEROUN	Extreme-Nord	Mayo-kani	Savane naturelle
+50	CmrZ2-kani_sn-pl3-G3-253	CAMEROUN	Extreme-Nord	Mayo-kani	Savane naturelle
+51	CmrZ2-kani_sn-pl3-H2-237	CAMEROUN	Extreme-Nord	Mayo-kani	Savane naturelle
+52	CmrZ2-kani_sn-pl3-H3-254	CAMEROUN	Extreme-Nord	Mayo-kani	Savane naturelle
+0	CmrZ2-dana_ca-pl3-A5-263	CAMEROUN	Extreme-Nord	Mayo-Dana	Champ agricole
+1	CmrZ2-dana_ca-pl3-B4-256	CAMEROUN	Extreme-Nord	Mayo-Dana	Champ agricole
+2	CmrZ2-dana_ca-pl3-C4-257	CAMEROUN	Extreme-Nord	Mayo-Dana	Champ agricole
+3	CmrZ2-dana_ca-pl3-C5-265	CAMEROUN	Extreme-Nord	Mayo-Dana	Champ agricole
+4	CmrZ2-dana_ca-pl3-C6-273	CAMEROUN	Extreme-Nord	Mayo-Dana	Champ agricole
+5	CmrZ2-dana_ca-pl3-D4-258	CAMEROUN	Extreme-Nord	Mayo-Dana	Champ agricole
+6	CmrZ2-dana_ca-pl3-D5-266	CAMEROUN	Extreme-Nord	Mayo-Dana	Champ agricole
+7	CmrZ2-dana_ca-pl3-D6-274	CAMEROUN	Extreme-Nord	Mayo-Dana	Champ agricole
+8	CmrZ2-dana_ca-pl3-F4-260	CAMEROUN	Extreme-Nord	Mayo-Dana	Champ agricole
+9	CmrZ2-dana_ca-pl3-F5-268	CAMEROUN	Extreme-Nord	Mayo-Dana	Champ agricole
+10	CmrZ2-dana_ca-pl3-H4-262	CAMEROUN	Extreme-Nord	Mayo-Dana	Champ agricole
+11	CmrZ2-dana_sn-pl3-A7-279	CAMEROUN	Extreme-Nord	Mayo-Dana	Savane naturelle
+12	CmrZ2-dana_sn-pl3-A8-288	CAMEROUN	Extreme-Nord	Mayo-Dana	Savane naturelle
+13	CmrZ2-dana_sn-pl3-B7-280	CAMEROUN	Extreme-Nord	Mayo-Dana	Savane naturelle
+14	CmrZ2-dana_sn-pl3-B8-289	CAMEROUN	Extreme-Nord	Mayo-Dana	Savane naturelle
+15	CmrZ2-dana_sn-pl3-C7-282	CAMEROUN	Extreme-Nord	Mayo-Dana	Savane naturelle
+16	CmrZ2-dana_sn-pl3-C8-290	CAMEROUN	Extreme-Nord	Mayo-Dana	Savane naturelle
+17	CmrZ2-dana_sn-pl3-D7-283	CAMEROUN	Extreme-Nord	Mayo-Dana	Savane naturelle
+18	CmrZ2-dana_sn-pl3-E6-275	CAMEROUN	Extreme-Nord	Mayo-Dana	Savane naturelle
+19	CmrZ2-dana_sn-pl3-E8-292	CAMEROUN	Extreme-Nord	Mayo-Dana	Savane naturelle
+20	CmrZ2-dana_sn-pl3-F6-276	CAMEROUN	Extreme-Nord	Mayo-Dana	Savane naturelle
+21	CmrZ2-dana_sn-pl3-G6-277	CAMEROUN	Extreme-Nord	Mayo-Dana	Savane naturelle
+22	CmrZ2-dana_sn-pl3-G8-294	CAMEROUN	Extreme-Nord	Mayo-Dana	Savane naturelle
+23	CmrZ2-dana_sn-pl3-H6-278	CAMEROUN	Extreme-Nord	Mayo-Dana	Savane naturelle
+24	CmrZ2-dana_sn-pl3-H7-287	CAMEROUN	Extreme-Nord	Mayo-Dana	Savane naturelle
+25	CmrZ2-dana_sn-pl3-H8-295	CAMEROUN	Extreme-Nord	Mayo-Dana	Savane naturelle
+53	CmrZ2-tsana_ca-pl4-A1-326	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+54	CmrZ2-tsana_ca-pl4-A2-334	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+55	CmrZ2-tsana_ca-pl4-A3-342	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+56	CmrZ2-tsana_ca-pl4-B1-327	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+57	CmrZ2-tsana_ca-pl4-B2-335	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+58	CmrZ2-tsana_ca-pl4-B3-343	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+59	CmrZ2-tsana_ca-pl4-C2-336	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+60	CmrZ2-tsana_ca-pl4-C3-344	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+61	CmrZ2-tsana_ca-pl4-D1-329	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+62	CmrZ2-tsana_ca-pl4-D2-337	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+63	CmrZ2-tsana_ca-pl4-D3-345	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+64	CmrZ2-tsana_ca-pl4-E1-330	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+65	CmrZ2-tsana_ca-pl4-E2-338	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+66	CmrZ2-tsana_ca-pl4-E3-346	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+67	CmrZ2-tsana_ca-pl4-F1-331	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+68	CmrZ2-tsana_ca-pl4-F2-339	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+69	CmrZ2-tsana_ca-pl4-F3-347	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+70	CmrZ2-tsana_ca-pl4-G1-332	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+71	CmrZ2-tsana_ca-pl4-H1-333	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+72	CmrZ2-tsana_ca-pl4-H2-341	CAMEROUN	Extreme-Nord	Mayo-Tsana	Champ agricole
+73	CmrZ2-tsana_sn-pl3-B9-302	CAMEROUN	Extreme-Nord	Mayo-Tsana	Savane naturelle
+74	CmrZ3-basc_ca-pl4-A10-401	CAMEROUN	Nord	Bascheo	Champ agricole
+75	CmrZ3-basc_ca-pl4-A7-377	CAMEROUN	Nord	Bascheo	Champ agricole
+76	CmrZ3-basc_ca-pl4-A8-385	CAMEROUN	Nord	Bascheo	Champ agricole
+77	CmrZ3-basc_ca-pl4-A9-393	CAMEROUN	Nord	Bascheo	Champ agricole
+78	CmrZ3-basc_ca-pl4-B8-386	CAMEROUN	Nord	Bascheo	Champ agricole
+79	CmrZ3-basc_ca-pl4-B9-394	CAMEROUN	Nord	Bascheo	Champ agricole
+80	CmrZ3-basc_ca-pl4-C7-379	CAMEROUN	Nord	Bascheo	Champ agricole
+81	CmrZ3-basc_ca-pl4-C9-395	CAMEROUN	Nord	Bascheo	Champ agricole
+82	CmrZ3-basc_ca-pl4-D8-388	CAMEROUN	Nord	Bascheo	Champ agricole
+83	CmrZ3-basc_ca-pl4-E9-397	CAMEROUN	Nord	Bascheo	Champ agricole
+84	CmrZ3-basc_ca-pl4-F7-382	CAMEROUN	Nord	Bascheo	Champ agricole
+85	CmrZ3-basc_ca-pl4-F8-390	CAMEROUN	Nord	Bascheo	Champ agricole
+86	CmrZ3-basc_ca-pl4-F9-398	CAMEROUN	Nord	Bascheo	Champ agricole
+87	CmrZ3-basc_ca-pl4-G9-399	CAMEROUN	Nord	Bascheo	Champ agricole
+88	CmrZ3-basc_ca-pl4-H7-384	CAMEROUN	Nord	Bascheo	Champ agricole
+89	CmrZ3-basc_ca-pl4-H8-392	CAMEROUN	Nord	Bascheo	Champ agricole
+90	CmrZ3-basc_ca-pl4-H9-400	CAMEROUN	Nord	Bascheo	Champ agricole
+91	CmrZ3-basc_sn-pl4-A4-352	CAMEROUN	Nord	Bascheo	Savane naturelle
+92	CmrZ3-basc_sn-pl4-A5-361	CAMEROUN	Nord	Bascheo	Savane naturelle
+93	CmrZ3-basc_sn-pl4-A6-369	CAMEROUN	Nord	Bascheo	Savane naturelle
+94	CmrZ3-basc_sn-pl4-B4-354	CAMEROUN	Nord	Bascheo	Savane naturelle
+95	CmrZ3-basc_sn-pl4-C4-355	CAMEROUN	Nord	Bascheo	Savane naturelle
+96	CmrZ3-basc_sn-pl4-C6-371	CAMEROUN	Nord	Bascheo	Savane naturelle
+97	CmrZ3-basc_sn-pl4-D4-356	CAMEROUN	Nord	Bascheo	Savane naturelle
+98	CmrZ3-basc_sn-pl4-E4-357	CAMEROUN	Nord	Bascheo	Savane naturelle
+99	CmrZ3-basc_sn-pl4-E6-372	CAMEROUN	Nord	Bascheo	Savane naturelle
+100	CmrZ3-basc_sn-pl4-F4-358	CAMEROUN	Nord	Bascheo	Savane naturelle
+101	CmrZ3-basc_sn-pl4-F5-366	CAMEROUN	Nord	Bascheo	Savane naturelle
+102	CmrZ3-basc_sn-pl4-F6-373	CAMEROUN	Nord	Bascheo	Savane naturelle
+103	CmrZ3-basc_sn-pl4-F6-375	CAMEROUN	Nord	Bascheo	Savane naturelle
+104	CmrZ3-basc_sn-pl4-G3-350	CAMEROUN	Nord	Bascheo	Savane naturelle
+105	CmrZ3-basc_sn-pl4-G4-359	CAMEROUN	Nord	Bascheo	Savane naturelle
+106	CmrZ3-basc_sn-pl4-G5-367	CAMEROUN	Nord	Bascheo	Savane naturelle
+107	CmrZ3-basc_sn-pl4-G6-374	CAMEROUN	Nord	Bascheo	Savane naturelle
+108	CmrZ3-basc_sn-pl4-H3-351	CAMEROUN	Nord	Bascheo	Savane naturelle
+109	CmrZ3-basc_sn-pl4-H4-360	CAMEROUN	Nord	Bascheo	Savane naturelle
+110	CmrZ3-basc_sn-pl4-H5-368	CAMEROUN	Nord	Bascheo	Savane naturelle
+111	CmrZ3-basc_sn-pl4-H6-376	CAMEROUN	Nord	Bascheo	Savane naturelle
+140	CmrZ3-tche_ca-pl4-A11-409	CAMEROUN	Nord	Tcheboa	Champ agricole
+141	CmrZ3-tche_ca-pl4-A12-417	CAMEROUN	Nord	Tcheboa	Champ agricole
+142	CmrZ3-tche_ca-pl4-B12-418	CAMEROUN	Nord	Tcheboa	Champ agricole
+143	CmrZ3-tche_ca-pl4-C12-419	CAMEROUN	Nord	Tcheboa	Champ agricole
+144	CmrZ3-tche_ca-pl4-D12-420	CAMEROUN	Nord	Tcheboa	Champ agricole
+145	CmrZ3-tche_ca-pl4-E12-421	CAMEROUN	Nord	Tcheboa	Champ agricole
+146	CmrZ3-tche_ca-pl4-F10-406	CAMEROUN	Nord	Tcheboa	Champ agricole
+147	CmrZ3-tche_ca-pl4-F11-414	CAMEROUN	Nord	Tcheboa	Champ agricole
+148	CmrZ3-tche_ca-pl4-F12-422	CAMEROUN	Nord	Tcheboa	Champ agricole
+149	CmrZ3-tche_ca-pl4-G10-407	CAMEROUN	Nord	Tcheboa	Champ agricole
+150	CmrZ3-tche_ca-pl4-G11-415	CAMEROUN	Nord	Tcheboa	Champ agricole
+151	CmrZ3-tche_ca-pl4-G12-423	CAMEROUN	Nord	Tcheboa	Champ agricole
+152	CmrZ3-tche_ca-pl4-H10-408	CAMEROUN	Nord	Tcheboa	Champ agricole
+153	CmrZ3-tche_ca-pl4-H11-416	CAMEROUN	Nord	Tcheboa	Champ agricole
+154	CmrZ3-tche_ca-pl5-A1-425	CAMEROUN	Nord	Tcheboa	Champ agricole
+155	CmrZ3-tche_ca-pl5-B1-426	CAMEROUN	Nord	Tcheboa	Champ agricole
+156	CmrZ3-tche_ca-pl5-C4-451	CAMEROUN	Nord	Tcheboa	Champ agricole
+157	CmrZ3-tche_ca-pl5-D4-452	CAMEROUN	Nord	Tcheboa	Champ agricole
+158	CmrZ3-tche_sn-pl5-A3-441	CAMEROUN	Nord	Tcheboa	Savane naturelle
+159	CmrZ3-tche_sn-pl5-A4-449	CAMEROUN	Nord	Tcheboa	Savane naturelle
+160	CmrZ3-tche_sn-pl5-B2-434	CAMEROUN	Nord	Tcheboa	Savane naturelle
+161	CmrZ3-tche_sn-pl5-B3-442	CAMEROUN	Nord	Tcheboa	Savane naturelle
+162	CmrZ3-tche_sn-pl5-C2-435	CAMEROUN	Nord	Tcheboa	Savane naturelle
+163	CmrZ3-tche_sn-pl5-C3-443	CAMEROUN	Nord	Tcheboa	Savane naturelle
+164	CmrZ3-tche_sn-pl5-D2-436	CAMEROUN	Nord	Tcheboa	Savane naturelle
+165	CmrZ3-tche_sn-pl5-D3-444	CAMEROUN	Nord	Tcheboa	Savane naturelle
+166	CmrZ3-tche_sn-pl5-E1-429	CAMEROUN	Nord	Tcheboa	Savane naturelle
+167	CmrZ3-tche_sn-pl5-E2-437	CAMEROUN	Nord	Tcheboa	Savane naturelle
+168	CmrZ3-tche_sn-pl5-E3-445	CAMEROUN	Nord	Tcheboa	Savane naturelle
+169	CmrZ3-tche_sn-pl5-F1-430	CAMEROUN	Nord	Tcheboa	Savane naturelle
+170	CmrZ3-tche_sn-pl5-F3-446	CAMEROUN	Nord	Tcheboa	Savane naturelle
+171	CmrZ3-tche_sn-pl5-G3-447	CAMEROUN	Nord	Tcheboa	Savane naturelle
+172	CmrZ3-tche_sn-pl5-H1-432	CAMEROUN	Nord	Tcheboa	Savane naturelle
+173	CmrZ3-tche_sn-pl5-H2-440	CAMEROUN	Nord	Tcheboa	Savane naturelle
+174	CmrZ3-tche_sn-pl5-H3-448	CAMEROUN	Nord	Tcheboa	Savane naturelle
+112	CmrZ3-ngon_jc-pl7-A10-578	CAMEROUN	Nord	Ngong	Jardin de case
+113	CmrZ3-ngon_jc-pl7-A12-597	CAMEROUN	Nord	Ngong	Jardin de case
+114	CmrZ3-ngon_jc-pl7-B10-579	CAMEROUN	Nord	Ngong	Jardin de case
+115	CmrZ3-ngon_jc-pl7-B12-598	CAMEROUN	Nord	Ngong	Jardin de case
+116	CmrZ3-ngon_jc-pl7-C10-580	CAMEROUN	Nord	Ngong	Jardin de case
+117	CmrZ3-ngon_jc-pl7-D10-581	CAMEROUN	Nord	Ngong	Jardin de case
+118	CmrZ3-ngon_jc-pl7-D11-592	CAMEROUN	Nord	Ngong	Jardin de case
+119	CmrZ3-ngon_jc-pl7-D12-573	CAMEROUN	Nord	Ngong	Jardin de case
+120	CmrZ3-ngon_jc-pl7-F10-584	CAMEROUN	Nord	Ngong	Jardin de case
+121	CmrZ3-ngon_jc-pl7-F11-594	CAMEROUN	Nord	Ngong	Jardin de case
+122	CmrZ3-ngon_jc-pl7-F12-575	CAMEROUN	Nord	Ngong	Jardin de case
+123	CmrZ3-ngon_jc-pl7-G10-585	CAMEROUN	Nord	Ngong	Jardin de case
+124	CmrZ3-ngon_jc-pl7-G11-595	CAMEROUN	Nord	Ngong	Jardin de case
+125	CmrZ3-ngon_jc-pl7-G12-576	CAMEROUN	Nord	Ngong	Jardin de case
+126	CmrZ3-ngon_jc-pl7-H10-587	CAMEROUN	Nord	Ngong	Jardin de case
+127	CmrZ3-ngon_sa-pl7-H12-543	CAMEROUN	Nord	Ngong	Savane naturelle
+128	CmrZ3-ngon_sn-pl6-A10-546	CAMEROUN	Nord	Ngong	Savane naturelle
+129	CmrZ3-ngon_sn-pl6-A11-555	CAMEROUN	Nord	Ngong	Savane naturelle
+130	CmrZ3-ngon_sn-pl6-A12-564	CAMEROUN	Nord	Ngong	Savane naturelle
+131	CmrZ3-ngon_sn-pl6-B10-547	CAMEROUN	Nord	Ngong	Savane naturelle
+132	CmrZ3-ngon_sn-pl6-B11-556	CAMEROUN	Nord	Ngong	Savane naturelle
+133	CmrZ3-ngon_sn-pl6-C10-548	CAMEROUN	Nord	Ngong	Savane naturelle
+134	CmrZ3-ngon_sn-pl6-C11-557	CAMEROUN	Nord	Ngong	Savane naturelle
+135	CmrZ3-ngon_sn-pl6-F10-551	CAMEROUN	Nord	Ngong	Savane naturelle
+136	CmrZ3-ngon_sn-pl6-F12-570	CAMEROUN	Nord	Ngong	Savane naturelle
+137	CmrZ3-ngon_sn-pl6-G12-571	CAMEROUN	Nord	Ngong	Savane naturelle
+138	CmrZ3-ngon_sn-pl6-H10-554	CAMEROUN	Nord	Ngong	Savane naturelle
+139	CmrZ3-ngon_sn-pl6-H12-572	CAMEROUN	Nord	Ngong	Savane naturelle
+194	CmrZ4-tcha_ch-pl5-B8-484	CAMEROUN	Adamaoua	Tchabal	Champ
+195	CmrZ4-tcha_ch-pl5-B9-493	CAMEROUN	Adamaoua	Tchabal	Champ
+196	CmrZ4-tcha_ch-pl5-C9-494	CAMEROUN	Adamaoua	Tchabal	Champ
+197	CmrZ4-tcha_ch-pl5-H8-491	CAMEROUN	Adamaoua	Tchabal	Champ
+198	CmrZ4-tcha_jc-pl5-C8-485	CAMEROUN	Adamaoua	Tchabal	Jardin de case
+199	CmrZ4-tcha_jc-pl5-E8-487	CAMEROUN	Adamaoua	Tchabal	Jardin de case
+200	CmrZ4-tcha_jc-pl5-G8-490	CAMEROUN	Adamaoua	Tchabal	Jardin de case
+201	CmrZ4-tcha_sn-pl5-A5-458	CAMEROUN	Adamaoua	Tchabal	Savane naturelle
+202	CmrZ4-tcha_sn-pl5-B5-459	CAMEROUN	Adamaoua	Tchabal	Savane naturelle
+203	CmrZ4-tcha_sn-pl5-B6-467	CAMEROUN	Adamaoua	Tchabal	Savane naturelle
+204	CmrZ4-tcha_sn-pl5-C5-460	CAMEROUN	Adamaoua	Tchabal	Savane naturelle
+205	CmrZ4-tcha_sn-pl5-C6-468	CAMEROUN	Adamaoua	Tchabal	Savane naturelle
+206	CmrZ4-tcha_sn-pl5-D5-461	CAMEROUN	Adamaoua	Tchabal	Savane naturelle
+207	CmrZ4-tcha_sn-pl5-D6-469	CAMEROUN	Adamaoua	Tchabal	Savane naturelle
+208	CmrZ4-tcha_sn-pl5-E4-453	CAMEROUN	Adamaoua	Tchabal	Savane naturelle
+209	CmrZ4-tcha_sn-pl5-E5-462	CAMEROUN	Adamaoua	Tchabal	Savane naturelle
+210	CmrZ4-tcha_sn-pl5-F6-471	CAMEROUN	Adamaoua	Tchabal	Savane naturelle
+211	CmrZ4-tcha_sn-pl5-F7-479	CAMEROUN	Adamaoua	Tchabal	Savane naturelle
+212	CmrZ4-tcha_sn-pl5-G5-464	CAMEROUN	Adamaoua	Tchabal	Savane naturelle
+213	CmrZ4-tcha_sn-pl5-G6-472	CAMEROUN	Adamaoua	Tchabal	Savane naturelle
+214	CmrZ4-tcha_sn-pl5-H5-465	CAMEROUN	Adamaoua	Tchabal	Savane naturelle
+215	CmrZ4-tcha_sn-pl5-H6-473	CAMEROUN	Adamaoua	Tchabal	Savane naturelle
+175	CmrZ4-fala_sn-pl5-A10-501	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+176	CmrZ4-fala_sn-pl5-A11-510	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+177	CmrZ4-fala_sn-pl5-A12-519	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+178	CmrZ4-fala_sn-pl5-B10-502	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+179	CmrZ4-fala_sn-pl5-B11-511	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+180	CmrZ4-fala_sn-pl5-C10-503	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+181	CmrZ4-fala_sn-pl5-C11-512	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+182	CmrZ4-fala_sn-pl5-D10-504	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+183	CmrZ4-fala_sn-pl5-D11-514	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+184	CmrZ4-fala_sn-pl5-D9-495	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+185	CmrZ4-fala_sn-pl5-E10-506	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+186	CmrZ4-fala_sn-pl5-E11-515	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+187	CmrZ4-fala_sn-pl5-E9-496	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+188	CmrZ4-fala_sn-pl5-F10-507	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+189	CmrZ4-fala_sn-pl5-F9-498	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+190	CmrZ4-fala_sn-pl5-G10-508	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+191	CmrZ4-fala_sn-pl5-G9-499	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+192	CmrZ4-fala_sn-pl5-H11-518	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+193	CmrZ4-fala_sn-pl5-H9-500	CAMEROUN	Adamaoua	Falaise	Savane naturelle
+216	CmrZ4-tiso_sn-pl3-C9-538	CAMEROUN	Adamaoua	Tison	Savane naturelle
+217	CmrZ4-tiso_sn-pl5-D12-523	CAMEROUN	Adamaoua	Tison	Savane naturelle
+218	CmrZ4-tiso_sn-pl6-D9-532	CAMEROUN	Adamaoua	Tison	Savane naturelle
+219	CmrZ4-tiso_sn-pl6-E9-533	CAMEROUN	Adamaoua	Tison	Savane naturelle
+220	CmrZ4-tiso_sn-pl6-F9-534	CAMEROUN	Adamaoua	Tison	Savane naturelle
+221	CmrZ4-tiso_sn-pl6-G9-535	CAMEROUN	Adamaoua	Tison	Savane naturelle
+222	CmrZ4-tiso_sn-pl6-H9-536	CAMEROUN	Adamaoua	Tison	Savane naturelle
+242	CmrZ5-ktaba_sn-pl6-A3-634	CAMEROUN	Ouest	Koutaba	Savane naturelle
+243	CmrZ5-ktaba_sn-pl6-A6-625	CAMEROUN	Ouest	Koutaba	Savane naturelle
+244	CmrZ5-ktaba_sn-pl6-A7-631	CAMEROUN	Ouest	Koutaba	Savane naturelle
+245	CmrZ5-ktaba_sn-pl6-B1-636	CAMEROUN	Ouest	Koutaba	Savane naturelle
+246	CmrZ5-ktaba_sn-pl6-B8-606	CAMEROUN	Ouest	Koutaba	Savane naturelle
+247	CmrZ5-ktaba_sn-pl6-C4-604	CAMEROUN	Ouest	Koutaba	Savane naturelle
+248	CmrZ5-ktaba_sn-pl6-C8-631	CAMEROUN	Ouest	Koutaba	Savane naturelle
+249	CmrZ5-ktaba_sn-pl6-D1-624	CAMEROUN	Ouest	Koutaba	Savane naturelle
+250	CmrZ5-ktaba_sn-pl6-D7-605	CAMEROUN	Ouest	Koutaba	Savane naturelle
+251	CmrZ5-ktaba_sn-pl6-E1-617	CAMEROUN	Ouest	Koutaba	Savane naturelle
+252	CmrZ5-ktaba_sn-pl6-E3-615	CAMEROUN	Ouest	Koutaba	Savane naturelle
+253	CmrZ5-ktaba_sn-pl6-F3-602	CAMEROUN	Ouest	Koutaba	Savane naturelle
+254	CmrZ5-ktaba_sn-pl6-G4-614	CAMEROUN	Ouest	Koutaba	Savane naturelle
+255	CmrZ5-ktaba_sn-pl6-G6-608	CAMEROUN	Ouest	Koutaba	Savane naturelle
+256	CmrZ5-ktaba_sn-pl6-H7-637	CAMEROUN	Ouest	Koutaba	Savane naturelle
+257	CmrZ5-ktaba_sn-pl7-A7-601	CAMEROUN	Ouest	Koutaba	Savane naturelle
+258	CmrZ5-ktaba_sn-pl7-B4-635	CAMEROUN	Ouest	Koutaba	Savane naturelle
+259	CmrZ5-ktaba_sn-pl7-B9-621	CAMEROUN	Ouest	Koutaba	Savane naturelle
+260	CmrZ5-ktaba_sn-pl7-E1-628	CAMEROUN	Ouest	Koutaba	Savane naturelle
+261	CmrZ5-ktaba_sn-pl7-F9-618	CAMEROUN	Ouest	Koutaba	Savane naturelle
+262	CmrZ5-ktaba_sn-pl7-G4-629	CAMEROUN	Ouest	Koutaba	Savane naturelle
+263	CmrZ5-ktaba_sn-pl7-G9-638	CAMEROUN	Ouest	Koutaba	Savane naturelle
+264	CmrZ5-ktaba_sn-pl7-H2-611	CAMEROUN	Ouest	Koutaba	Savane naturelle
+265	CmrZ5-ktaba_sn-pl7-H7-619	CAMEROUN	Ouest	Koutaba	Savane naturelle
+266	CmrZ5-mbou_ca-pl6-B4-652	CAMEROUN	Ouest	Mbouda	Champ agricole
+267	CmrZ5-mbou_ca-pl6-E6-658	CAMEROUN	Ouest	Mbouda	Champ agricole
+268	CmrZ5-mbou_ca-pl6-F4-644	CAMEROUN	Ouest	Mbouda	Champ agricole
+269	CmrZ5-mbou_ca-pl6-G7-642	CAMEROUN	Ouest	Mbouda	Champ agricole
+270	CmrZ5-mbou_ca-pl6-H3-648	CAMEROUN	Ouest	Mbouda	Champ agricole
+271	CmrZ5-mbou_ca-pl6-H4-647	CAMEROUN	Ouest	Mbouda	Champ agricole
+272	CmrZ5-mbou_ca-pl6-H6-657	CAMEROUN	Ouest	Mbouda	Champ agricole
+273	CmrZ5-mbou_ca-pl7-E5-655	CAMEROUN	Ouest	Mbouda	Champ agricole
+274	CmrZ5-mbou_ca-pl7-F2-654	CAMEROUN	Ouest	Mbouda	Champ agricole
+275	CmrZ5-mbou_ca-pl7-F3-656	CAMEROUN	Ouest	Mbouda	Champ agricole
+276	CmrZ5-mbou_ca-pl7-G1-639	CAMEROUN	Ouest	Mbouda	Champ agricole
+277	CmrZ5-mbou_ca-pl7-G3-646	CAMEROUN	Ouest	Mbouda	Champ agricole
+278	CmrZ5-mbou_ca-pl7-G6-651	CAMEROUN	Ouest	Mbouda	Champ agricole
+279	CmrZ5-mbou_ca-pl7-G7-650	CAMEROUN	Ouest	Mbouda	Champ agricole
+280	CmrZ5-mbou_ca-pl7-G8-641	CAMEROUN	Ouest	Mbouda	Champ agricole
+281	CmrZ5-mbou_ca-pl7-H3-649	CAMEROUN	Ouest	Mbouda	Champ agricole
+282	CmrZ5-mbou_ca-pl7-H6-653	CAMEROUN	Ouest	Mbouda	Champ agricole
+283	CmrZ5-ton_sn-pl6-A8-683	CAMEROUN	Ouest	Tonga	Savane naturelle
+284	CmrZ5-ton_sn-pl6-B5-661	CAMEROUN	Ouest	Tonga	Savane naturelle
+285	CmrZ5-ton_sn-pl6-C2-674	CAMEROUN	Ouest	Tonga	Savane naturelle
+286	CmrZ5-ton_sn-pl6-C5-680	CAMEROUN	Ouest	Tonga	Savane naturelle
+287	CmrZ5-ton_sn-pl6-D2-681	CAMEROUN	Ouest	Tonga	Savane naturelle
+288	CmrZ5-ton_sn-pl6-D3-686	CAMEROUN	Ouest	Tonga	Savane naturelle
+289	CmrZ5-ton_sn-pl6-E2-676	CAMEROUN	Ouest	Tonga	Savane naturelle
+290	CmrZ5-ton_sn-pl6-E4-679	CAMEROUN	Ouest	Tonga	Savane naturelle
+291	CmrZ5-ton_sn-pl6-E7-678	CAMEROUN	Ouest	Tonga	Savane naturelle
+292	CmrZ5-ton_sn-pl6-F1-669	CAMEROUN	Ouest	Tonga	Savane naturelle
+293	CmrZ5-ton_sn-pl6-F5-671	CAMEROUN	Ouest	Tonga	Savane naturelle
+294	CmrZ5-ton_sn-pl6-F7-677	CAMEROUN	Ouest	Tonga	Savane naturelle
+295	CmrZ5-ton_sn-pl6-G1-645	CAMEROUN	Ouest	Tonga	Savane naturelle
+296	CmrZ5-ton_sn-pl7-A1-673	CAMEROUN	Ouest	Tonga	Savane naturelle
+297	CmrZ5-ton_sn-pl7-A2-685	CAMEROUN	Ouest	Tonga	Savane naturelle
+298	CmrZ5-ton_sn-pl7-A4-659	CAMEROUN	Ouest	Tonga	Savane naturelle
+299	CmrZ5-ton_sn-pl7-A5-690	CAMEROUN	Ouest	Tonga	Savane naturelle
+300	CmrZ5-ton_sn-pl7-A6-667	CAMEROUN	Ouest	Tonga	Savane naturelle
+301	CmrZ5-ton_sn-pl7-B3-675	CAMEROUN	Ouest	Tonga	Savane naturelle
+302	CmrZ5-ton_sn-pl7-B5-660	CAMEROUN	Ouest	Tonga	Savane naturelle
+303	CmrZ5-ton_sn-pl7-B8-665	CAMEROUN	Ouest	Tonga	Savane naturelle
+304	CmrZ5-ton_sn-pl7-C7-684	CAMEROUN	Ouest	Tonga	Savane naturelle
+305	CmrZ5-ton_sn-pl7-D3-664	CAMEROUN	Ouest	Tonga	Savane naturelle
+306	CmrZ5-ton_sn-pl7-D6-663	CAMEROUN	Ouest	Tonga	Savane naturelle
+307	CmrZ5-ton_sn-pl7-E4-668	CAMEROUN	Ouest	Tonga	Savane naturelle
+308	CmrZ5-ton_sn-pl7-E9-666	CAMEROUN	Ouest	Tonga	Savane naturelle
+309	CmrZ5-ton_sn-pl7-F6-672	CAMEROUN	Ouest	Tonga	Savane naturelle
+310	CmrZ5-ton_sn-pl7-H1-670	CAMEROUN	Ouest	Tonga	Savane naturelle
+311	CmrZ5-ton_sn-pl7-H9-679	CAMEROUN	Ouest	Tonga	Savane naturelle
+223	CmrZ5-ban_sn-pl6-A4-708	CAMEROUN	Ouest	Bangoua	Savane naturelle
+224	CmrZ5-ban_sn-pl6-C3-712	CAMEROUN	Ouest	Bangoua	Savane naturelle
+225	CmrZ5-ban_sn-pl6-C6-697	CAMEROUN	Ouest	Bangoua	Savane naturelle
+226	CmrZ5-ban_sn-pl6-C7-702	CAMEROUN	Ouest	Bangoua	Savane naturelle
+227	CmrZ5-ban_sn-pl6-D4-696	CAMEROUN	Ouest	Bangoua	Savane naturelle
+228	CmrZ5-ban_sn-pl6-D5-709	CAMEROUN	Ouest	Bangoua	Savane naturelle
+229	CmrZ5-ban_sn-pl6-D8-706	CAMEROUN	Ouest	Bangoua	Savane naturelle
+230	CmrZ5-ban_sn-pl6-E5-705	CAMEROUN	Ouest	Bangoua	Savane naturelle
+231	CmrZ5-ban_sn-pl6-E8-695	CAMEROUN	Ouest	Bangoua	Savane naturelle
+232	CmrZ5-ban_sn-pl6-G5-704	CAMEROUN	Ouest	Bangoua	Savane naturelle
+233	CmrZ5-ban_sn-pl6-H1-698	CAMEROUN	Ouest	Bangoua	Savane naturelle
+234	CmrZ5-ban_sn-pl6-H8-729	CAMEROUN	Ouest	Bangoua	Savane naturelle
+235	CmrZ5-ban_sn-pl7-A9-725	CAMEROUN	Ouest	Bangoua	Savane naturelle
+236	CmrZ5-ban_sn-pl7-B1-700	CAMEROUN	Ouest	Bangoua	Savane naturelle
+237	CmrZ5-ban_sn-pl7-C1-721	CAMEROUN	Ouest	Bangoua	Savane naturelle
+238	CmrZ5-ban_sn-pl7-D7-724	CAMEROUN	Ouest	Bangoua	Savane naturelle
+239	CmrZ5-ban_sn-pl7-F4-718	CAMEROUN	Ouest	Bangoua	Savane naturelle
+240	CmrZ5-ban_sn-pl7-F5-723	CAMEROUN	Ouest	Bangoua	Savane naturelle
+241	CmrZ5-ban_sn-pl7-H5-703	CAMEROUN	Ouest	Bangoua	Savane naturelle
+312	MalZ6-solo_sn-pl6-D6-751	MALI	Segou	Solosso	Savane naturelle
+313	MalZ6-solo_sn-pl6-F2-737	MALI	Segou	Solosso	Savane naturelle
+314	MalZ6-solo_sn-pl6-G3-743	MALI	Segou	Solosso	Savane naturelle
+315	MalZ6-solo_sn-pl6-G8-755	MALI	Segou	Solosso	Savane naturelle
+316	MalZ6-solo_sn-pl6-H5-758	MALI	Segou	Solosso	Savane naturelle
+317	MalZ6-solo_sn-pl7-A3-740	MALI	Segou	Solosso	Savane naturelle
+318	MalZ6-solo_sn-pl7-B2-760	MALI	Segou	Solosso	Savane naturelle
+319	MalZ6-solo_sn-pl7-B7-752	MALI	Segou	Solosso	Savane naturelle
+320	MalZ6-solo_sn-pl7-C2-735	MALI	Segou	Solosso	Savane naturelle
+321	MalZ6-solo_sn-pl7-C3-744	MALI	Segou	Solosso	Savane naturelle
+322	MalZ6-solo_sn-pl7-C4-739	MALI	Segou	Solosso	Savane naturelle
+323	MalZ6-solo_sn-pl7-C5-733	MALI	Segou	Solosso	Savane naturelle
+324	MalZ6-solo_sn-pl7-C6-741	MALI	Segou	Solosso	Savane naturelle
+325	MalZ6-solo_sn-pl7-C8-749	MALI	Segou	Solosso	Savane naturelle
+326	MalZ6-solo_sn-pl7-C9-748	MALI	Segou	Solosso	Savane naturelle
+327	MalZ6-solo_sn-pl7-D1-734	MALI	Segou	Solosso	Savane naturelle
+328	MalZ6-solo_sn-pl7-D2-742	MALI	Segou	Solosso	Savane naturelle
+329	MalZ6-solo_sn-pl7-D4-745	MALI	Segou	Solosso	Savane naturelle
+330	MalZ6-solo_sn-pl7-D8-756	MALI	Segou	Solosso	Savane naturelle
+331	MalZ6-solo_sn-pl7-E2-746	MALI	Segou	Solosso	Savane naturelle
+332	MalZ6-solo_sn-pl7-E3-738	MALI	Segou	Solosso	Savane naturelle
+333	MalZ6-solo_sn-pl7-E6-754	MALI	Segou	Solosso	Savane naturelle
+334	MalZ6-solo_sn-pl7-E8-761	MALI	Segou	Solosso	Savane naturelle
+335	MalZ6-solo_sn-pl7-F1-753	MALI	Segou	Solosso	Savane naturelle
+336	MalZ6-solo_sn-pl7-F7-736	MALI	Segou	Solosso	Savane naturelle
+337	MalZ6-solo_sn-pl7-F8-762	MALI	Segou	Solosso	Savane naturelle
+338	MalZ6-solo_sn-pl7-G5-731	MALI	Segou	Solosso	Savane naturelle
+339	MalZ6-solo_sn-pl7-H4-757	MALI	Segou	Solosso	Savane naturelle
+340	MalZ6-solo_sn-pl7-H8-747	MALI	Segou	Solosso	Savane naturelle

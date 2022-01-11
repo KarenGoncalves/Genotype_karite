@@ -40,9 +40,9 @@ The file  here was processed with STACKS with the following filters:
 #     min_mas: minimum number of samples with rare allele <int> : 2
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
-vcf = read.vcfR("input/third_filters_m3_p50_x0_S2.singleton.unlinked_100k.vcf")
+vcf = read.vcfR("input data - DO NOT MODIFY/third_filters_m3_p50_x0_S2.singleton.unlinked_100k.vcf")
 genind = vcfR2genind(vcf, sep = "/")
-popinfo = read.delim("input/Population.txt", header = T)
+popinfo = read.delim("input data - DO NOT MODIFY/Population.txt", header = T)
 popmap = unique(popinfo[, 2:5])
 
 inds_info <- rownames(tab(genind))
@@ -80,7 +80,7 @@ names(new_popmap) = c("Sample", names(true_names))
 
 for (i in 1:nrow(sep_info)) {
   ind_data = data.frame(
-    Sample = sep_info$sample[i],
+    Sample = sep_info$ind[i],
     Country = true_names[["Country"]][
       sep_info[i, "Country"]
     ],
