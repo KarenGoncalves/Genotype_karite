@@ -110,16 +110,22 @@ save(genind, new_popmap, sep_info, file = "basic_genind.RData")
 ```{r}
 rm(list=ls())
 load("basic_genind.RData")
-groups <- with(population_information, 
-							 list(countries = unique(Country),
-							 		 regions = unique(Region),
-							 		 populations = unique(Locality),
-							 		 use = unique(Land_use)))
+groups <- with(new_popmap, 
+							 list(Country = unique(Country),
+							 		 Region = unique(Region),
+							 		 Locality = unique(Locality),
+							 		 Land_use = unique(Land_use)))
 
 ```
 
-```{r Pairwise Fst}
+```{r Pairwise Fst - calculate it and save, eval=FALSE, include=FALSE}
 pwfst <- genet.dist(genind, diploid = T, method = "Fst")
+save(pwfst, file = "RData/GenetDist_Fst.RData")
+```
+
+
+```{r Pairwise Fst}
+load("RData/GenetDist_Fst.RData")
 nj_fst <- pwfst %>% nj()
 nj_fst$edge.length <- abs(nj_fst$edge.length)
 nj_fst$tip.label <- 
@@ -160,8 +166,8 @@ ggplot() +
               aes(y, x, label = label, color = country),
               hjust = 1.1, size = 3) +
     scale_x_continuous(
-    	limits = c(-0.25, 0.18), 
-    	breaks = seq(0, 0.2, 0.05)) + 
+    	limits = c(-0.25, 0.3), 
+    	breaks = seq(0, 0.3, 0.05)) + 
 	theme_minimal() + 
 	theme(axis.text.y = element_blank(), 
 				panel.grid = element_blank()) + 
@@ -177,54 +183,124 @@ setPop(country_genind) <-
 	~Country
 
 genetic_summary_countries <- 
-	lapply(groups$countries, function(x) {
+	lapply(groups$Country, function(x) {
 	inds <- pop(country_genind) == x
 	
 	basic.stats(country_genind[inds])
 })
 
-names(genetic_summary_countries) <- groups$countries
+names(genetic_summary_countries) <- groups$Country
 
 
-exp_het_countries <- adegenet::Hs(country_genind, 
-																	pop = pop(country_genind))
 
-sapply(groups$countries, function(x) {
-	genetic_summary_countries[[x]]$overall[c("Ho", "Hs", "Ht", "Fis")]
-}) %>% t() %>% data.frame()
+alle_rich_countries = allelic.richness(country_genind)$Ar %>%
+	apply(2, mean)
 
-exp_het_countries
+priv_alle_countries = private_alleles(country_genind, report = "table", level = "population") %>%
+	rowSums()
+
+n_pop_countries = sapply(groups$Country, function(x) {
+	length(which(new_popmap$Country == x))
+	})
+
+basic_stats_countries = lapply(groups$Country, function(x) {
+	data.frame(
+		N = n_pop_countries[x],
+		Ho = genetic_summary_countries[[x]]$overall["Ho"],
+		Hs = genetic_summary_countries[[x]]$overall["Hs"],
+		Fis = genetic_summary_countries[[x]]$overall["Fis"],
+		Private_alleles = priv_alle_countries[x],
+		Allelic_richness = alle_rich_countries[x]
+	)
+	
+}) %>% do.call(what = rbind)
 ```
 
 
 ```{r summary per pop}
-genetic_summary <- lapply(levels(pop(genind)), function(x) {
+genetic_summary_pop <- 
+	lapply(levels(pop(genind)), function(x) {
 	inds <- pop(genind) == x
 	
-	basic.stats(genind[inds], diploid = T)
-})
-names(genetic_summary) <- levels(pop(genind))
-
-
-gen_summ_pops <- 
-	sapply(levels(pop(genind)), function(x) {
-		genetic_summary[[x]]$overall[c("Ho", "Hs", "Ht", "Fis")]
-	}) %>% t() %>% data.frame()
-
-exp_het <- adegenet::Hs(genind, pop = pop(genind))
-
-exp_het_countries_mean <- 
-	sapply(groups$countries, function(x) {
-	a = exp_het[grep(x, levels(pop(genind)))] 
-	c(mean = mean(a), std = sd(a))
+	basic.stats(genind[inds])
 })
 
-fis_countries_mean <- sapply(groups$countries, function(x) {
-	a = gen_summ_pops$Fis[grep(x, levels(pop(genind)))] 
-	c(mean = mean(a), std = sd(a))
+names(genetic_summary_pop) <- levels(pop(genind))
+
+
+
+alle_rich_pop = allelic.richness(genind)$Ar %>%
+	apply(2, mean)
+
+priv_alle_pop = private_alleles(genind, report = "table", level = "population") %>%
+	rowSums()
+
+n_pop = sapply(levels(pop(genind)), function(x) {
+	length(which(pop(genind) == x))
+	})
+
+basic_stats_pop= lapply(levels(pop(genind)), function(x) {
+	data.frame(
+		N = n_pop[x],
+		Ho = genetic_summary_pop[[x]]$overall["Ho"],
+		Hs = genetic_summary_pop[[x]]$overall["Hs"],
+		Fis = genetic_summary_pop[[x]]$overall["Fis"],
+		Private_alleles = priv_alle_pop[x],
+		Allelic_richness = alle_rich_pop[x]
+	)
+	
+}) %>% do.call(what = rbind)
+```
+
+## Calculate heterozygosity
+
+```{r Heterozygosity}
+# Test homogeneity of variances of observed and expected heterozygosities
+summaries = lapply(levels(pop(genind)), function(x) {
+	inds = pop(genind) == x
+	summary(genind[inds])
 })
-exp_het_countries_mean
-fis_countries_mean
+names(summaries) = levels(pop(genind))
+
+homogeneity = lapply(levels(pop(genind)), function(x) {
+	bartlett.test(list(summaries[[x]]$Hexp, 
+										 summaries[[x]]$Hobs))
+})
+names(homogeneity) = levels(pop(genind))
+
+# Test if expected het is greater than observed. 
+# Tell the test if the variances are equal or not
+zygosity = lapply(levels(pop(genind)), function(x) {
+	
+	var.equal = ifelse(homogeneity[[x]]$p.value > 0.05,
+										 T, F)
+	
+	t.test(summaries[[x]]$Hexp, 
+				 summaries[[x]]$Hobs,
+				 pair = T, var.equal = var.equal, 
+				 alternative = "greater",
+				 conf.level = 0.95)
+})
+names(zygosity) = levels(pop(genind))
+
+```
+
+## Get global F-stats
+
+```{r}
+fst_fis = lapply(levels(pop(genind)), function(x) {
+	inds = pop(genind) == x
+	wc(genind[inds])
+})
+
+fstats = lapply(levels(pop(genind)), function(x) {
+	inds = pop(genind) == x
+	fst = Fst(genind[inds] %>% as.loci)
+	colMeans(fst)
+})
+
+names(fst_fis) = names(fstats) = levels(pop(genind))
+
 ```
 
 ```{r Amova with Mali}
@@ -249,7 +325,7 @@ knitr::kable(amova_mali$componentsofcovariance, caption =
 ```
 
 
-```{r Amova without Mali}
+```{r Amova without Mali, eval=FALSE, include=FALSE}
 exclude_mali <- population_information$inds[
 	population_information$Country != "Mali"]
 
@@ -277,7 +353,12 @@ knitr::kable(amova_nomali$results, caption =
 ```
 
 ```{r glPCA, eval=FALSE, include=FALSE}
+vcf = read.vcfR("input data - DO NOT MODIFY/third_filters_m3_p50_x0_S2.singleton.unlinked_100k.vcf")
+
 genlight <- vcfR2genlight(vcf, n.cores = parallel::detectCores())
+genlight@pop = pop(genind)
+genlight@strata = strata(genind)
+genlight@hierarchy = genind@hierarchy
 
 glPCA_result <- glPca(
 	genlight, parallel = T, nf = 20,
@@ -285,13 +366,13 @@ glPCA_result <- glPca(
 )
 
 glPCA_df <- data.frame(
-	Taxa.Name = rownames(glPCA_result$scores),
+	Sample = rownames(glPCA_result$scores),
 	glPCA_result$scores
-) %>% merge(population_information[, -1], by = "inds") 
+) %>% merge(new_popmap, by = "Sample") 
 
 #devtools::install_github("jaredhuling/jcolors")
 library("jcolors")
-
+theme_set(theme_bw())
 ggplot(glPCA_df, 
 			 aes(PC1, PC2,shape = Country, color = Region)) +
 	geom_point() + scale_color_jcolors(palette = "pal8")
@@ -301,11 +382,6 @@ ggplot(glPCA_df,
 ## DAPC using clusters obtained with find.clusters function
 
 ```{r DAPC with find.clusters, echo=FALSE}
-theme_set(theme_bw())
-strata(genind) <- population_information
-setPop(genind) <-
-	~Country/Region/Locality
-
 maxK <- 20
 myMat <- matrix(nrow=10, ncol=maxK)
 colnames(myMat) <- 1:ncol(myMat)
@@ -323,7 +399,7 @@ my_df$K <- factor(my_df$K, levels = 1:20)
 head(my_df)
 
 p1 <- ggplot(my_df, aes(x = K, y = BIC))
-p1 <- p1 + geom_boxplot() + 
+p1 <- p1 + geom_boxplot() 
 p1 <- p1 + theme_bw()
 p1 <- p1 + xlab("Number of groups (K)")
 p1
@@ -343,7 +419,7 @@ clusters_karite <- find.clusters(
 table(pop(genind), clusters_karite$grp)
 											 
 table.value(
-	table(population_information$Country, clusters_karite$grp),
+	table(new_popmap$Country, clusters_karite$grp),
 	col.labels = paste("K ", levels(clusters_karite$grp)))
 
 dapc_countries <- dapc(genind, 
@@ -352,7 +428,7 @@ dapc_countries <- dapc(genind,
 
 
 dapc_da <- data.frame(
-	population_information[, 2:5],
+	new_popmap[, 2:5],
 	clusters = dapc_countries$grp,
 	dapc_countries$ind.coord
 )
@@ -406,9 +482,9 @@ ggsave(
 ```
 
 ```{r DAPC PCA plot}
-data.frame(inds = population_information$inds, 
+data.frame(inds = new_popmap$Sample, 
            grp = dapc_countries$grp, 
-           Country = population_information$Country,
+           Country = new_popmap$Country,
            PC1 = dapc_countries$tab$`PCA-pc.1`, 
            PC2 = dapc_countries$tab$`PCA-pc.2`) %>% 
 ggplot(aes(PC1, PC2, color = grp, shape = Country)) + geom_point() +
@@ -420,15 +496,14 @@ ggsave(
 )
 
 ```
+Structure-like plot - findclusters doesnt work because the posterior probability of each individual is 1 in all cases.
 
-
-```{r Structure-like plot - findclusters, fig.width=13.9, fig.height=7.21}
-setPop(genind) <- ~Country/Region/Locality
+```{r Structure-like plot - findclusters, eval=FALSE, fig.height=7.21, fig.width=13.9, include=FALSE}
 membership_probability = data.frame(
 	individuals = rownames(dapc_countries[["posterior"]]),
 	dapc_countries[["posterior"]]
 ) %>% merge(
-	data.frame(individuals = population_information$inds,
+	data.frame(individuals = new_popmap$Sample,
 						 pops = as.character(pop(genind))),
 	by = "individuals") %>%
 	pivot_longer(
@@ -437,8 +512,8 @@ membership_probability = data.frame(
 
 membership_probability$individuals <- 
 	factor(membership_probability$individuals,
-				 levels = population_information$inds[
-				 	order(population_information$inds)])
+				 levels = new_popmap$Sample[
+				 	order(new_popmap$Sample)])
 
 mem_prob_pops <- lapply(levels(pop(genind)), function(i) {
 		title = paste0(
@@ -480,90 +555,6 @@ ggsave(
 
 ```
 
-```{r poppr}
-poppr_idx <- 
-	lapply(levels(pop(genind)), function(x) {
-		poppr(genind, sublist = x, hist = T)
-	})
-
-poppr_idx_df <- sapply(1:length(poppr_idx), function(x) {
-	a = as.data.frame(poppr_idx[[x]]) 
-	names(a) <- names(poppr_idx[[x]])
-	a
-})  %>% t() 
-
-```
-```{r summary per pop}
-genetic_summary <- lapply(levels(pop(genind)), function(x) {
-	inds <- pop(genind) == x
-	
-	basic.stats(genind[inds], diploid = T)
-})
-names(genetic_summary) <- levels(pop(genind))
 
 
-gen_summ_pops <- 
-	sapply(levels(pop(genind)), function(x) {
-		genetic_summary[[x]]$overall[c("Ho", "Hs", "Ht", "Fis")]
-	}) %>% t() %>% data.frame()
-
-exp_het <- adegenet::Hs(genind, pop = pop(genind))
-exp_het_countries_mean <- 
-	sapply(groups$countries, function(x) {
-	a = exp_het[grep(x, levels(pop(genind)))] 
-	c(mean = mean(a), std = sd(a))
-})
-
-fis_countries_mean <- sapply(groups$countries, function(x) {
-	a = gen_summ_pops$Fis[grep(x, levels(pop(genind)))] 
-	c(mean = mean(a), std = sd(a))
-})
-
-```
-
-```{r}
-library("vegan")
-mon.tab <- mlg.table(genind, plot = FALSE)
-min_sample <- min(rowSums(mon.tab))
-rarecurve(mon.tab, sample = min_sample, xlab = "Sample Size", ylab = "Expected MLGs")
-title("Rarefaction of Fruit Rot and Blossom Blight")
-```
-
-```{r}
-dna <- read.dna("input data - DO NOT MODIFY/GCA_019916065.1_ASM1991606v1_genomic.fna", 
-								format = "fasta")
-
-gff <- read.table("input data - DO NOT MODIFY/Vitpa_all.gff", 
-									sep = "\t", quote = "", header = F)
-
-correlations <- read.txt("input data - DO NOT MODIFY/correlations_vcf_assem.txt", header = F)
-names(correlations) = c("assembly", "vcf")
-
-for (i in 1:nrow(correlations)) {
-	gff$V1 = gsub(correlations$assembly[i], correlations$vcf[i], gff$V1)
-	gff$V9 = gsub(correlations$assembly[i], correlations$vcf[i], gff$V9)
-}
-
-chrom <- create.chromR(name='Supercontig', vcf=vcf, seq=dna, ann=gff)
-
-plot(chrom)
-
-msk_chrom <- masker(chrom, min_QUAL = 1, min_DP = 300, 
-										max_DP = 700, min_MQ = 59.9,  max_MQ = 60.1)
-
-plot(msk_chrom)
-
-chromoqc(chrom, dp.alpha=20)
-
-head(chrom@var.info)
-
-plot(chrom)
-
-```
-
-```{r}
-pop <- pop(genind)
-myDiff <- genetic_diff(vcf, pops = pop, method = 'nei')
-knitr::kable(head(myDiff[,1:15]))
-```
 
