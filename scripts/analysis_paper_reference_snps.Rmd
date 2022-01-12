@@ -117,66 +117,6 @@ groups <- with(new_popmap,
 							 		 Land_use = unique(Land_use)))
 
 ```
-
-```{r Pairwise Fst - calculate it and save, eval=FALSE, include=FALSE}
-pwfst <- genet.dist(genind, diploid = T, method = "Fst")
-save(pwfst, file = "RData/GenetDist_Fst.RData")
-```
-
-
-```{r Pairwise Fst}
-load("RData/GenetDist_Fst.RData")
-nj_fst <- pwfst %>% nj()
-nj_fst$edge.length <- abs(nj_fst$edge.length)
-nj_fst$tip.label <- 
-	levels(pop(genind)) %>%
-	gsub(pattern = "_", replacement = " - ")
-
-pwfst_df <- as.matrix(pwfst) %>% 
-	as.data.frame()
-names(pwfst_df) <- rownames(pwfst_df) <- 
-	levels(pop(genind))
-
-dend_pwfst <- hclust(pwfst_df %>% as.matrix %>% as.dist)
-pops_countries <- dend_pwfst$labels %>% 
-	str_split(pattern = "_") %>% 
-	lapply(function(x) x[1]) %>%
-	unlist %>% as.factor
-```
-
-
-```{r Pairwise Fst dend plot}
-library(ggdendro)
-
-ggdend_pwfst <- as.dendrogram(dend_pwfst) %>%
-	dendro_data()
-
-ggdend_pwfst$labels$label <- 
-	gsub("_", " - ", ggdend_pwfst$labels$label)
-
-ggdend_pwfst$labels$country <- 
-	ggdend_pwfst$labels$label %>% str_split(pattern = " ") %>%
-	lapply(function(x) x[1]) %>% unlist %>% as.factor 
-
-ggplot() +
-    geom_segment(data = ggdend_pwfst$segments, 
-                 aes(x = y, y = x, 
-                     xend = yend, yend = xend))+
-    geom_text(data = ggdend_pwfst$labels, 
-              aes(y, x, label = label, color = country),
-              hjust = 1.1, size = 3) +
-    scale_x_continuous(
-    	limits = c(-0.25, 0.3), 
-    	breaks = seq(0, 0.3, 0.05)) + 
-	theme_minimal() + 
-	theme(axis.text.y = element_blank(), 
-				panel.grid = element_blank()) + 
-	labs(x = "Pairwise Fst", y = "")
-
-ggsave(paste0("Reference_snps_PairwiseFST_njtree.pdf"))
-knitr::kable(pwfst_df, digits = 3)
-```
-
 ```{r summary per country}
 country_genind <- genind
 setPop(country_genind) <-
@@ -224,10 +164,13 @@ genetic_summary_pop <-
 	
 	basic.stats(genind[inds])
 })
-
 names(genetic_summary_pop) <- levels(pop(genind))
 
+n_pop = sapply(levels(pop(genind)), function(x) {
+	length(which(pop(genind) == x))
+	})
 
+hexp = Hs(genind, pop = pop(genind))
 
 alle_rich_pop = allelic.richness(genind)$Ar %>%
 	apply(2, mean)
@@ -235,21 +178,23 @@ alle_rich_pop = allelic.richness(genind)$Ar %>%
 priv_alle_pop = private_alleles(genind, report = "table", level = "population") %>%
 	rowSums()
 
-n_pop = sapply(levels(pop(genind)), function(x) {
-	length(which(pop(genind) == x))
-	})
 
 basic_stats_pop= lapply(levels(pop(genind)), function(x) {
 	data.frame(
 		N = n_pop[x],
 		Ho = genetic_summary_pop[[x]]$overall["Ho"],
-		Hs = genetic_summary_pop[[x]]$overall["Hs"],
+		Hs = hexp[x],
 		Fis = genetic_summary_pop[[x]]$overall["Fis"],
 		Private_alleles = priv_alle_pop[x],
-		Allelic_richness = alle_rich_pop[x]
+		Allelic_richness = alle_rich_pop[x] %>% round(digits = 3)
 	)
 	
 }) %>% do.call(what = rbind)
+
+write.table(basic_stats_pop, 
+						file = paste0("BasicStats_pop_", Sys.Date(), ".txt"),
+						row.names = T, col.names = T, 
+						append = F, quote = F, sep = "\t", )
 ```
 
 ## Calculate heterozygosity
@@ -288,18 +233,10 @@ names(zygosity) = levels(pop(genind))
 ## Get global F-stats
 
 ```{r}
-fst_fis = lapply(levels(pop(genind)), function(x) {
-	inds = pop(genind) == x
-	wc(genind[inds])
-})
+fst_fis = wc(genind)
 
-fstats = lapply(levels(pop(genind)), function(x) {
-	inds = pop(genind) == x
-	fst = Fst(genind[inds] %>% as.loci)
-	colMeans(fst)
-})
 
-names(fst_fis) = names(fstats) = levels(pop(genind))
+fstats = Fst(genind %>% as.loci) %>% colMeans()
 
 ```
 
@@ -377,101 +314,90 @@ ggplot(glPCA_df,
 			 aes(PC1, PC2,shape = Country, color = Region)) +
 	geom_point() + scale_color_jcolors(palette = "pal8")
 ```
+
 # DAPC
 
-## DAPC using clusters obtained with find.clusters function
+## snapclust
+```{r find number of clusters, echo=FALSE}
+aic <- snapclust.choose.k(21, genind, IC = "AIC")
+plot(aic, type = "b", cex = 2, xlab = "k", ylab = "AIC")
+points(which.min(aic), min(aic), col = "blue", pch = 20, cex = 3)
+abline(v = 21, lty = 2, col = "red")
 
-```{r DAPC with find.clusters, echo=FALSE}
-maxK <- 20
-myMat <- matrix(nrow=10, ncol=maxK)
-colnames(myMat) <- 1:ncol(myMat)
-for(i in 1:nrow(myMat)){
-  grp <- find.clusters(genind, n.pca = 490, 
-  										 choose.n.clust = FALSE,  max.n.clust = maxK)
-  myMat[i,] <- grp$Kstat
-}
+# #bic <- snapclust.choose.k(21, genind, IC = "BIC")
+# plot(bic, type = "b", cex = 2, xlab = "k", ylab = "BIC")
+# points(which.min(bic), min(bic), col = "blue", pch = 20, cex = 3)
+# abline(v = 21, lty = 2, col = "red")
 
-myMat <- as.data.frame(myMat)
-myMat$Group = 1:nrow(myMat)
-my_df <- pivot_longer(myMat, cols = !Group, names_to = "K", values_to = "BIC")
-my_df$Group <- factor(my_df$Group, levels = 1:10)
-my_df$K <- factor(my_df$K, levels = 1:20)
-head(my_df)
-
-p1 <- ggplot(my_df, aes(x = K, y = BIC))
-p1 <- p1 + geom_boxplot() 
-p1 <- p1 + theme_bw()
-p1 <- p1 + xlab("Number of groups (K)")
-p1
-
-mean_BIC <- apply(myMat[, -21], 2, mean)
-nK = (mean_BIC == min(mean_BIC)) %>% which
-
-
+nk = which.min(aic)
 ```
+
+## DAPC using clusters obtained with find.clusters function
 
 
 ```{r DAPC with find.clusters, echo=FALSE}
 clusters_karite <- find.clusters(
-    genind, n.pca = 490, stat = "BIC",
-    method = "ward", n.clust = nK)
+	genind, n.pca = 490, stat = "AIC",
+	method = "ward", n.clust = nk)
 
 table(pop(genind), clusters_karite$grp)
 											 
 table.value(
-	table(new_popmap$Country, clusters_karite$grp),
+	table(new_table$pop, clusters_karite$grp),
 	col.labels = paste("K ", levels(clusters_karite$grp)))
 
-dapc_countries <- dapc(genind, 
-											 clusters_karite$grp, 
-											 n.pca = 90, n.da = 40)
-
+dapc<- dapc.genind(genind,
+									 clusters_karite$grp, 
+									 n.pca = 50, n.da = 2
+)
 
 dapc_da <- data.frame(
 	new_popmap[, 2:5],
-	clusters = dapc_countries$grp,
-	dapc_countries$ind.coord
+	clusters = dapc$grp,
+	dapc$ind.coord
 )
 ```
 
 
-```{r DAPC scatter plot, echo=FALSE}
+```{r DAPC scatter plot, echo=FALSE, fig.height=10, fig.width=13, paged.print=FALSE}
 library(gridExtra)
 library(RColorBrewer)
 library(pals)
 
 theme_set(theme_bw())
 scatter_dapc <- list(
-	eigen = (data.frame(
-		DAs = factor(paste0("Discriminant function ", 1:dapc_countries$n.da),
-								 levels = paste0("Discriminant function ", 1:dapc_countries$n.da)),
-		eigenvalues = dapc_countries$eig) %>%
-			ggplot(aes(DAs, eigenvalues, fill = eigenvalues)) +
-			geom_col() + 
-			labs(x = "", y = "Eigenvalues", 
-					 title = "Eigenvalues of retained discriminant functions") +
-			#scale_y_continuous(breaks = seq(0, 6000, 1000)) +
-			theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
-						legend.position = "none")
-	), 
+	membership = (
+		data.frame(table(new_table$pop, clusters_karite$grp)) %>% 
+		 	mutate(new_freq = ifelse(Freq == 0, NA, Freq), 
+		 				 Ks = factor(Var2, levels = 1:nk), 
+		 				 pops = factor(Var1, levels = levels(pop(genind))[21:1])) %>%
+		 	ggplot(aes(Ks, pops, size = new_freq)) + 
+		 	geom_point(shape = 22, fill = "black") + 
+		 	theme(axis.text.x.top = element_text()) + 
+		 	labs(x = "Clusters", y = "") + 
+		 	scale_size_continuous(name = "Number of individuals", 
+		 												breaks = c(5, seq(10, 40, 10)), 
+		 												limits = c(0, 45))
+		 ),
+	# eigen = (
+	# 	data.frame(
+	# 	DAs = factor(paste0("Discriminant function ", 1:dapc$n.da),
+	# 							 levels = paste0("Discriminant function ", 1:dapc$n.da)),
+	# 	eigenvalues = dapc$eig) %>%
+	# 		ggplot(aes(DAs, eigenvalues)) +
+	# 		geom_col() + 
+	# 		labs(x = "", y = "Eigenvalues", 
+	# 				 title = "Eigenvalues of retained discriminant functions") +
+	# 		#scale_y_continuous(breaks = seq(0, 6000, 1000)) +
+	# 		theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
+	# 					legend.position = "none")
+	# ), 
 	ld1_ld2 =
 		(ggplot(dapc_da, aes(LD1, LD2, color = clusters)) + 
 		 	geom_point(aes(shape = Country)) + 
 		 	stat_ellipse(aes(color = clusters)) +
 		 	labs(x = "DAPC LD1", y = "DAPC LD2") +
-		 	scale_color_manual(values = pals::glasbey(nK))),
-	ld1_ld3 =
-		(ggplot(dapc_da, aes(LD1, LD3, color = clusters)) + 
-		 	geom_point(aes(shape = Country)) + 
-		 	stat_ellipse(aes(color = clusters)) +
-		 	labs(x = "DAPC LD1", y = "DAPC LD3") +
-		 	scale_color_manual(values = pals::glasbey(nK))),
-	ld2_ld3 =
-		(ggplot(dapc_da, aes(LD2, LD3, color = clusters)) + 
-		 	geom_point(aes(shape = Country)) + 
-		 	stat_ellipse(aes(color = clusters)) +
-		 	labs(x = "DAPC LD2", y = "DAPC LD3") +
-		 	scale_color_manual(values = pals::glasbey(nK)))
+		 	scale_color_manual(values = pals::glasbey(nk), name = "Clusters"))
 )
 
 ggsave(
@@ -483,12 +409,12 @@ ggsave(
 
 ```{r DAPC PCA plot}
 data.frame(inds = new_popmap$Sample, 
-           grp = dapc_countries$grp, 
+           grp = dapc$grp, 
            Country = new_popmap$Country,
-           PC1 = dapc_countries$tab$`PCA-pc.1`, 
-           PC2 = dapc_countries$tab$`PCA-pc.2`) %>% 
+           PC1 = dapc$tab$`PCA-pc.1`, 
+           PC2 = dapc$tab$`PCA-pc.2`) %>% 
 ggplot(aes(PC1, PC2, color = grp, shape = Country)) + geom_point() +
-    scale_color_manual(values = pals::glasbey(nK))
+    scale_color_manual(values = pals::glasbey(nk))
 
 
 ggsave(
@@ -555,6 +481,67 @@ ggsave(
 
 ```
 
+
+
+```{r Pairwise Fst - calculate it and save, eval=FALSE, include=FALSE}
+pwfst <- genet.dist(genind, diploid = T, method = "Fst")
+save(pwfst, file = "RData/GenetDist_Fst.RData")
+```
+
+
+```{r Pairwise Fst}
+load("RData/GenetDist_Fst.RData")
+nj_fst <- pwfst %>% nj()
+nj_fst$edge.length <- abs(nj_fst$edge.length)
+nj_fst$tip.label <- 
+	levels(pop(genind)) %>%
+	gsub(pattern = "_", replacement = " - ")
+
+pwfst_df <- as.matrix(pwfst) %>% 
+	as.data.frame()
+names(pwfst_df) <- rownames(pwfst_df) <- 
+	levels(pop(genind))
+
+dend_pwfst <- hclust(pwfst_df %>% as.matrix %>% as.dist)
+pops_countries <- dend_pwfst$labels %>% 
+	str_split(pattern = "_") %>% 
+	lapply(function(x) x[1]) %>%
+	unlist %>% as.factor
+```
+
+
+```{r Pairwise Fst dend plot}
+library(ggdendro)
+
+ggdend_pwfst <- as.dendrogram(dend_pwfst) %>%
+	dendro_data()
+
+ggdend_pwfst$labels$label <- 
+	gsub("_", " - ", ggdend_pwfst$labels$label)
+
+ggdend_pwfst$labels$country <- 
+	ggdend_pwfst$labels$label %>% str_split(pattern = " ") %>%
+	lapply(function(x) x[1]) %>% unlist %>% as.factor 
+
+ggplot() +
+    geom_segment(data = ggdend_pwfst$segments, 
+                 aes(x = y, y = x, 
+                     xend = yend, yend = xend))+
+    geom_text(data = ggdend_pwfst$labels, 
+              aes(y, x, label = label, color = country),
+              hjust = 1.1, size = 3) +
+    scale_x_continuous(
+    	limits = c(-0.3, 0.3), 
+    	breaks = seq(0, 0.3, 0.05)) + 
+	theme_minimal() + 
+	theme(axis.text.y = element_blank(), 
+				panel.grid = element_blank(), 
+				legend.position = "none") + 
+	labs(x = "Pairwise Fst", y = "")
+
+ggsave(paste0("Reference_snps_PairwiseFST_njtree.pdf"))
+knitr::kable(pwfst_df, digits = 3)
+```
 
 
 
