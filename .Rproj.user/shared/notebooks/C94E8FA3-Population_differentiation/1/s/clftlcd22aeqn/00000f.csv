@@ -1,0 +1,4 @@
+"0","load(""RData/genind_object.RData"")"
+"2","Warning: cannot open compressed file 'RData/genind_object.RData', probable reason 'No such file or directory'"
+"2","Error in readChar(con, 5L, useBytes = TRUE) : cannot open the connection
+"

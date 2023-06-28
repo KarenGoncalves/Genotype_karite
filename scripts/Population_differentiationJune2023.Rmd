@@ -1,0 +1,506 @@
+---
+title: "Karite genetic parameters"
+author: "Karen Cristine Goncalves dos Santos"
+date: "`r Sys.Date()`"
+output: 
+
+  pdf_document:
+    fig_caption: yes
+    keep_tex: yes
+---
+
+```{r Load packages, include=FALSE}
+knitr::opts_knit$set(root.dir = 'C:/Users/Public/Genotype_karite/')
+packages_to_use = c(
+	"poppr", "adegenet", "ape", #"LEA",
+	"mmod", "treemap", "tidyverse",
+	"vcfR", "pegas", "hierfstat",
+	"ggpubr")
+
+# install.packages(packages_to_use,
+# 								 dependencies = TRUE)
+for (i in packages_to_use) { 
+	library(i, character.only = T)}
+```
+
+```{r Load data, include=FALSE}
+setwd('C:/Users/Public/Genotype_karite/')
+knitr::opts_chunk$set(root.dir = 'C:/Users/Public/Genotype_karite/')
+load("RData/genind_object.RData")
+population_information <- read.csv(file = "input data - DO NOT MODIFY/Population.csv")
+names(population_information) <- c("Taxa", "Taxa.Name", "Country",
+																	 "Region", "Location.Population",
+																	 "Type.Land.Use")
+
+population_information = 
+	population_information[- which(is.na(population_information$Taxa)),]
+
+countries = c("CAMEROUN" = "Cmr", "MALI" = "Mal", "TCHAD" = "Tch")
+groups <- with(population_information, 
+							 list(countries = unique(Country),
+							 		 regions = unique(Region),
+							 		 populations = unique(Location.Population),
+							 		 use = unique(Type.Land.Use)))
+
+```
+
+# DAPC
+
+## DAPC using clusters obtained with find.clusters function
+
+```{r DAPC with find.clusters, echo=FALSE}
+population_information$Region <-
+	population_information$Region %>%
+	gsub(pattern = "ord", replacement = "orth") %>%
+	gsub(pattern = "Ouest", replacement = "West")
+
+theme_set(theme_bw())
+strata(total_vcf_hierfstat) <- population_information
+setPop(total_vcf_hierfstat) <-
+	~Country/Region/Location.Population
+
+# clusters_karite <- find.clusters(total_vcf_hierfstat, 
+# 																 method = "ward",
+# 																 n.pca = 490)
+# 
+# table(pop(total_vcf_hierfstat), clusters_karite$grp)
+# 											 
+# table.value(
+# 	table(population_information$Country, clusters_karite$grp),
+# 	col.labels = paste("K ", levels(clusters_karite$grp)))
+
+clusters_karite <- with(population_information,
+												paste0(Country, "_", Region)
+)
+names(clusters_karite) <- population_information$Taxa.Name
+dapc_countries <- dapc(total_vcf_hierfstat, 
+											 clusters_karite, 
+											 truenames = T,
+											 n.pca = 100, n.da = 4)
+
+scatter(dapc_countries, xax = 1, yax = 2)
+
+dapc_da <- data.frame(
+	population_information[, 2:5],
+	clusters = dapc_countries$grp,
+	dapc_countries$ind.coord
+) %>%
+	mutate(
+		newClusters = gsub("CAMEROUN_", "Cameroon - ", clusters) %>% 
+			gsub(pattern = "TCHAD_", replacement = "Chad - ") %>%
+			gsub(pattern = "MALI_", replacement = "Mali - ")
+		)
+
+
+
+library(gridExtra)
+library(viridis)
+
+scatter_dapc <- list(
+	eigen = (
+	data.frame(
+    DAs = factor(
+        paste0("Discriminant function ", 1:length(dapc_countries$eig)),
+        levels = paste0("Discriminant function ", 1:length(dapc_countries$eig))),
+    eigenvalues = dapc_countries$eig) %>%
+    ggplot(aes(DAs, eigenvalues, fill = eigenvalues)) +
+    geom_col() + 
+    labs(x = "", y = "Eigenvalues", 
+         title = "Eigenvalues of retained discriminant functions") +
+    scale_y_continuous(breaks = seq(0, 1000, 200)) +
+		theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
+          legend.position = "none")), 
+	ld1_ld2 =
+		(ggplot(dapc_da, aes(LD1, LD2, color = newClusters)) + 
+		 	geom_point(shape = 1) + stat_ellipse(aes(color = newClusters), size = 0.75) +
+		 	labs(x = "DAPC LD1", y = "DAPC LD2") +
+		 scale_color_viridis_d(option = "H")),
+	ld3_ld4 =
+		(ggplot(dapc_da, aes(LD3, LD4, color = newClusters)) + 
+		 	geom_point(shape = 1) + stat_ellipse(aes(color = newClusters), size = 0.75) +
+		 	labs(x = "DAPC LD3", y = "DAPC LD4") +
+		 scale_color_viridis_d(option = "H"))
+)
+
+dir.create(path = "C:/Users/Public/Genotype_karite/plotsJune2023")
+setwd("C:/Users/Public/Genotype_karite")
+pdf(paste0("plotsJune2023/Scatters_DAPC_Region", Sys.Date(), ".pdf"), onefile = T, width = 8)
+
+scatter_dapc
+
+dev.off()
+```
+
+```{r Structure-like plot - findclusters, fig.width=13.9, fig.height=7.21}
+setPop(total_vcf_hierfstat) <- ~Country/Region
+membership_probability = data.frame(
+	individuals = rownames(dapc_countries[["posterior"]]),
+	dapc_countries[["posterior"]]
+) %>% merge(
+	data.frame(individuals = population_information$Taxa.Name,
+						 pops = dapc_da$newClusters),
+	by = "individuals") %>%
+	pivot_longer(
+	-c(individuals, pops), names_to = "Clusters", 
+	values_to = "probability", names_prefix = "X") 
+
+membership_probability$individuals <- 
+	factor(membership_probability$individuals,
+				 levels = population_information$Taxa.Name[
+				 	order(population_information$Taxa.Name)])
+
+membership_probability$Clusters <-
+	membership_probability$Clusters %>%
+	gsub(pattern = "CAMEROUN_", 
+			 replacement = "Cameroon - ") %>% 
+			gsub(pattern = "TCHAD_", replacement = "Chad - ") %>%
+			gsub(pattern = "MALI_", replacement = "Mali - ") %>% gsub(pattern = "(Logone)\\.(\\w)", replacement = "\\1 \\2") %>%
+	gsub(pattern = "(\\w)\\.(\\w)", replacement = "\\1-\\2")
+		
+
+mem_prob_pops <- lapply(unique(membership_probability$Clusters), function(i) {
+		title = i
+		filter(membership_probability, pops == i) %>%
+		ggplot(
+       aes(individuals, probability, fill = Clusters)) +
+    geom_col() + 
+			labs(x = "", y = "",
+					 title = title) +
+			scale_y_continuous(breaks = c(0, 1)) +
+			scale_fill_viridis_d(option = "H") + 
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+    			axis.title.y = element_text(vjust = 0.5),
+          panel.grid = element_blank(), 
+    			plot.title = element_text(hjust = 0.5, size = 10)
+    			)
+	})
+
+plot_groups <- ggarrange(
+	plotlist = mem_prob_pops, 
+	ncol = 3, nrow = 4, labels = "AUTO", 
+	common.legend = T, legend = "bottom")
+
+setwd("C:/Users/Public/Genotype_karite")
+ggsave(
+	filename = paste0("plotsJune2023/Cluster_membership_DAPC_DA10_PC90_k11_", Sys.Date(), ".pdf"), 
+   plot = plot_groups, width = 8
+)
+
+```
+
+```{r DAPC PCA - findclusters plot}
+
+dapc_pca <- data.frame(
+	population_information[, 2:5],
+	dapc_countries$tab[, 1:10]
+)
+
+ggplot(dapc_pca, aes(PCA.pc.1, PCA.pc.2, color = Country)) + 
+	geom_point()
+```
+
+```{r PCA covariance - load data and plot variance explanation, echo=FALSE}
+pca <- dudi.pca(df = tab(total_vcf_hierfstat, NA.method = "mean"), 
+								scale = FALSE, scannf = FALSE, nf = 6)
+
+percent = pca$eig/sum(pca$eig)*100
+karite_ev <- 
+	list(percent, ylab = "Genetic variance explained by eigenvectors (%)", 
+				ylim = c(0,8), names.arg = round(percent, 1))
+```
+
+```{r}
+# Create a data.frame containing individual coordinates
+ind_coords = as.data.frame(pca$li)
+colnames(ind_coords) = paste0("Axis", 1:6)
+
+# Add a column containing individuals
+ind_coords$Ind = indNames(total_vcf_hierfstat)
+# Add a column with the site IDs
+ind_coords$Site = population_information$Country
+
+# Calculate centroid (average) position for each population
+centroid = aggregate(cbind(Axis1, Axis2, Axis3, 
+													 Axis4, Axis5, Axis6) ~ Site, 
+										 data = ind_coords, FUN = mean)
+
+# Add centroid coordinates to ind_coords dataframe
+ind_coords = left_join(ind_coords, centroid, 
+											 by = "Site", suffix = c("",".cen"))
+
+# Define colour palette
+cols = RColorBrewer::brewer.pal(
+	unique(population_information$Country), "Set1")
+
+# Custom x and y labels
+xlab = paste("PC 1 (", format(round(percent[1], 1), nsmall=1),
+						 " %)", sep="")
+ylab = paste("PC 2 (", format(round(percent[2], 1), nsmall=1),
+						 " %)", sep="")
+
+# Custom theme for ggplot2
+theme_set(theme_minimal())
+
+# Scatter plot axis 1 vs. 2
+(karite_pca <- 
+	ggplot(data = ind_coords, aes(x = Axis1, y = Axis2)) +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  # points
+  geom_point(aes(fill = Site), shape = 21, size = 3, 
+  					 show.legend = FALSE) +
+  # centroids
+  geom_label(data = centroid, aes(label = Site, fill = Site), 
+  					 size = 4, show.legend = FALSE) +
+	scale_x_continuous(breaks = seq(-18, 15, 3)) +
+	scale_y_continuous(breaks = seq(-17, 25, 3)) +
+  scale_fill_manual(values = cols) +
+  scale_colour_manual(values = cols) +
+  labs(x = xlab, y = ylab, title = "Karite PCA") )
+
+```
+
+```{r}
+big_group <- dplyr::filter(ind_coords, 
+													 Axis2 < 5 & Axis2 > -5 & Axis1 > -9)$Ind 
+big_group_pca <- dudi.pca(
+	df = tab(total_vcf_hierfstat[big_group,], NA.method = "mean"), 
+	scale = FALSE, scannf = FALSE, nf = 6)
+
+percent = big_group_pca$eig/sum(big_group_pca$eig)*100
+biggroup_ev <- 
+	list(percent, ylab = "Genetic variance explained by eigenvectors (%)", 
+				ylim = c(0,8), names.arg = round(percent, 1))
+```
+
+```{r}
+# Create a data.frame containing individual coordinates
+ind_coords = as.data.frame(big_group_pca$li)
+colnames(ind_coords) = paste0("Axis", 1:6)
+
+# Add a column containing individuals
+ind_coords$Ind = big_group
+# Add a column with the site IDs
+ind_coords$Site = subset(population_information, 
+												 subset = Taxa.Name %in% big_group,
+												 select = Country)[,1]
+
+ind_coords$Use = subset(population_information, 
+												 subset = Taxa.Name %in% big_group,
+												 select = Type.Land.Use)[,1]
+
+# Calculate centroid (average) position for each population
+centroid = aggregate(cbind(Axis1, Axis2, Axis3, 
+													 Axis4, Axis5, Axis6) ~ Site, 
+										 data = ind_coords, FUN = mean)
+
+# Add centroid coordinates to ind_coords dataframe
+ind_coords = left_join(ind_coords, centroid, 
+											 by = "Site", suffix = c("",".cen"))
+
+# Define colour palette
+cols = RColorBrewer::brewer.pal(
+	unique(ind_coords$Site), "Set1")
+
+# Custom x and y labels
+xlab = paste("PC 1 (", format(round(percent[1], 1), nsmall=1),
+						 " %)", sep="")
+ylab = paste("PC 2 (", format(round(percent[2], 1), nsmall=1),
+						 " %)", sep="")
+
+# Custom theme for ggplot2
+theme_set(theme_minimal())
+
+# Scatter plot axis 1 vs. 2
+(biggroup_pca_plot <- 
+	ggplot(data = ind_coords, aes(x = Axis1, y = Axis2)) +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  # points
+  geom_point(aes(fill = Site), shape = 21, size = 3, 
+  					 show.legend = FALSE) +
+  # centroids
+  geom_label(data = centroid, aes(label = Site, fill = Site), 
+  					 size = 4, show.legend = FALSE) +
+  scale_fill_manual(values = cols) +
+  scale_colour_manual(values = cols) +
+	scale_x_continuous(breaks = seq(-15, 18, 3)) +
+	scale_y_continuous(breaks = seq(-18, 24, 3)) +
+  labs(x = xlab, y = ylab, title = "Karite PCA") )
+
+```
+
+```{r Calculate distance between samples, include=FALSE}
+# Calculate genetic distance between the populations (using Nei's estimator)
+
+total_genpop <- genind2genpop(total_vcf_hierfstat, 
+															pop = pop(total_vcf_hierfstat), 
+															process.other = T )
+
+nei_dist <- dist.genpop(total_genpop, method = 1) %>% 
+	as.matrix() %>% as.data.frame()
+
+(heatmap_nei <- mutate(nei_dist, Pop1 = rownames(nei_dist)) %>% 
+	pivot_longer(cols = !Pop1, names_to = "Pop2", 
+							 values_to = "Nei_Distance") %>% 
+	ggplot(aes(Pop1, Pop2, fill = Nei_Distance)) + 
+	geom_tile() + labs(x = "", y = "") + 
+	scale_fill_gradient(low = "white", high = "black") +
+	theme(axis.text.x = element_text(angle = 90)))
+save(heatmap_nei, file = "RData/heatmap_nei.RData")
+
+```
+
+```{r}
+d_jost_stat <- list()
+g_stat <- list(Hendrick = list(), Nei = list())
+
+
+for (i in names(groups)) {
+	if (i == "countries") { 
+		setPop(total_vcf_hierfstat) <- 
+			~Country
+	} else if (i == "regions") {
+		setPop(total_vcf_hierfstat) <- 
+			~Country/Region
+	} else if (i == "populations") {
+		setPop(total_vcf_hierfstat) <- 
+			~Country/Region/Location.Population
+	} else {
+		setPop(total_vcf_hierfstat) <- 
+			~Type.Land.Use
+	}
+	
+	d_jost_stat[[i]] <- pairwise_D(total_vcf_hierfstat)
+	
+	g_stat$Hendrick[[i]] <- pairwise_Gst_Hedrick(total_vcf_hierfstat)
+	g_stat$Nei[[i]] = pairwise_Gst_Nei(total_vcf_hierfstat)
+	}
+
+```
+
+```{r fig.height=8}
+differentiation <- list(Jost_D = d_jost_stat,
+												Nei_Gst = g_stat$Nei,
+												Hendrick_Gst = g_stat$Hendrick)
+longer <- 
+	list(Jost_D = list(),
+			 Nei_Gst = list(),
+			 Hendrick_Gst = list())
+plots_longer <- list()
+theme_set(theme_bw())
+```
+
+```{r fig.height=8}
+for (i in names(groups)) {
+	if (i == "use") { a = "Type of land use"
+	} else if (i == "population") { a = "Locality"
+	} else { a = i }
+	
+	for (d in names(differentiation)) {
+		
+		differentiation[[d]][[i]] <- as.matrix(differentiation[[d]][[i]]) %>%
+			as.data.frame()
+		
+		differentiation[[d]][[i]]$group1 <- rownames(differentiation[[d]][[i]])
+		
+		longer[[d]][[i]] <- pivot_longer(
+			differentiation[[d]][[i]], cols = !group1,
+			names_to = "group2", values_to = "value")
+		
+		longer[[d]][[i]]$group1 <- factor(
+			longer[[d]][[i]]$group1, 
+			levels = colnames(differentiation[[d]][[i]]))
+		longer[[d]][[i]]$group2 <- factor(
+			longer[[d]][[i]]$group2, 
+			levels = colnames(differentiation[[d]][[i]]))
+		
+		longer[[d]][[i]]$value <- as.numeric(as.character(longer[[d]][[i]]$value))
+		
+	}
+	
+	plots_longer[[i]] <- lapply(names(differentiation), function(d) {
+		a = ifelse(d == "Jost_D", "Jost's D", 
+						 gsub("(\\w+)_Gst", "\\1's G'st", d))
+	ggplot(longer[[d]][[i]], aes(x = group1, y = group2, fill = value)) +
+			geom_tile() + 
+			scale_fill_gradient(low = "white", high = "black", name = a) + 
+			labs(x = "", y = "") +
+			theme(axis.text.x = element_text(angle = 90))
+	})
+}
+```
+
+```{r COA}
+strata(total_vcf_hierfstat) <- population_information[, 3:6]
+coa_pops <- list()
+
+for (g in names(groups)) {
+	if (g == names(groups)[1]) {
+		setPop(total_vcf_hierfstat) <- ~Country 
+	} else if (g == names(groups)[2]) {
+		setPop(total_vcf_hierfstat) <- ~Country/Region
+	} else if (g == names(groups)[3]) {
+		setPop(total_vcf_hierfstat) <- 
+			~Country/Region/Location.Population
+	} else {
+		setPop(total_vcf_hierfstat) <- 
+			~Country/Region/Location.Population/Type.Land.Use }
+	
+	coa_pops[[g]] <- genind2genpop(x = total_vcf_hierfstat,
+																 pop = pop(total_vcf_hierfstat)) %>% 
+		adegenet::tab() %>% dudi.coa(scannf = F, nf = 4)
+}
+```
+
+```{r AMOVA}
+library(vcfR)
+vcf_singleton_imputed <- read.vcfR(file = paste0(
+	"input data - DO NOT MODIFY/",
+	"third_filters_m3_p60_x0_S2.singleton.unlinked.vcf.gz")
+)
+total_vcf_hierfstat = 
+		vcfR2genind(
+		vcf_singleton_imputed,
+		ind.names = population_information$Taxa.Name, 
+		pop = population_information[, 2:6] 
+	) 
+
+strata(total_vcf_hierfstat) <- population_information[, 2:6]
+setPop(total_vcf_hierfstat) <- 
+	~Country/Region/Location.Population/Type.Land.Use
+library(poppr)
+amova <- poppr.amova(x = total_vcf_hierfstat, within = F,
+										 hier = ~Country/Region/Location.Population,
+										 threads = parallel::detectCores(), cutoff = 0.95
+)
+(rand_amova <- randtest(amova, nrepet = 999))
+plot(rand_amova)
+knitr::kable(amova$results, caption = "Result AMOVA. Hierarchy: _Country - Region - Location.Population_. Sample = Location.Population"
+							)
+save(amova, rand_amova, file = "RData/amova_res.RData")
+```
+
+```{r UPGMA, fig.height=7, fig.width=7}
+setPop(total_vcf_hierfstat) <- ~Country/Region/Location.Population
+
+# bitwise.dist is a poppr function that calculates both dissimilarity and Euclidean distance for genlight an snpclone objects
+
+tree_karite = poppr::aboot(total_vcf_hierfstat, tree = "upgma", 
+													 sample = 500, showtree = T, 
+													 strata = ~Country/Region/Location.Population,
+													 cutoff = 50, quiet = T)
+
+plot(as.phylo(tree_karite), show.tip.label = T, cex = 0.8)
+
+```
+
+```{r fig.height=8}
+save(plots_longer, differentiation, biggroup_ev, biggroup_pca_plot, 
+		 karite_ev, karite_pca, coa_pops, amova, rand_amova, tree_karite,
+		 file = "RData/differentiation_metrics.RData")
+
+
+save(tree_karite, file = "RData/tree_karite.RData")
+```

@@ -11,7 +11,7 @@ output:
 
 ```{r Load packages, include=FALSE}
 packages_to_use = c(
-	"poppr", "adegenet", "ape", "LEA",
+	"poppr", "adegenet", "ape", #"LEA",
 	"mmod", "treemap", "tidyverse",
 	"vcfR", "pegas", "hierfstat",
 	"ggpubr")
