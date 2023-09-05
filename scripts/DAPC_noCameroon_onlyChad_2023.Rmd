@@ -1,0 +1,297 @@
+---
+title: "Karite genetic parameters"
+author: "Karen Cristine Goncalves dos Santos"
+date: "`r Sys.Date()`"
+output: 
+
+  pdf_document:
+    fig_caption: yes
+    keep_tex: yes
+---
+
+```{r Load packages, include=FALSE}
+knitr::opts_knit$set(root.dir = 'C:/Users/Public/Genotype_karite/')
+packages_to_use = c(
+	"poppr", "adegenet", "ape", #"LEA",
+	"mmod", "treemap", "tidyverse",
+	"vcfR", "pegas", "hierfstat",
+	"ggpubr")
+
+# install.packages(packages_to_use,
+# 								 dependencies = TRUE)
+for (i in packages_to_use) { 
+	library(i, character.only = T)}
+```
+
+```{r Load data, include=FALSE}
+load("RData/genind_object.RData")
+population_information <- read.csv(file = "input data - DO NOT MODIFY/Population.csv")
+names(population_information) <- c("Taxa", "Taxa.Name", "Country",
+																	 "Region", "Location.Population",
+																	 "Type.Land.Use")
+
+population_information = 
+	population_information[- which(is.na(population_information$Taxa)),]
+
+countries = c("CAMEROUN" = "Cmr", "MALI" = "Mal", "TCHAD" = "Tch")
+groups <- with(population_information, 
+							 list(countries = unique(Country),
+							 		 regions = unique(Region),
+							 		 populations = unique(Location.Population),
+							 		 use = unique(Type.Land.Use)))
+
+```
+
+```{r}
+non_cameroon_popinfo = filter(population_information,
+													 Country != "CAMEROUN")
+non_cameroon_inds = non_cameroon_popinfo$Taxa.Name
+
+non_cameroon_genind = total_vcf_hierfstat[non_cameroon_inds,]
+```
+
+# DAPC
+
+## Without Cameroon
+
+```{r DAPC with find.clusters, echo=FALSE}
+non_cameroon_popinfo$Region <-
+	non_cameroon_popinfo$Region %>%
+	gsub(pattern = "ord", replacement = "orth") %>%
+	gsub(pattern = "Ouest", replacement = "West")
+
+theme_set(theme_bw())
+strata(non_cameroon_genind) <- non_cameroon_popinfo
+setPop(non_cameroon_genind) <-
+	~Country/Region/Location.Population
+
+clusters_karite <- with(non_cameroon_popinfo,
+												paste0(Country, "_", Region)
+)
+names(clusters_karite) <- non_cameroon_popinfo$Taxa.Name
+
+dapc_countries <- dapc(non_cameroon_genind, 
+											 clusters_karite, 
+											 truenames = T,
+											 n.pca = 50, 
+											 n.da = 4
+											 )
+
+scatter(dapc_countries, xax = 1, yax = 2)
+
+dapc_da <- data.frame(
+	non_cameroon_popinfo[, 2:5],
+	clusters = dapc_countries$grp,
+	dapc_countries$ind.coord
+) %>%
+	mutate(
+		newClusters = 
+			gsub(pattern = "TCHAD_", replacement = "Chad - ", clusters) %>%
+			gsub(pattern = "MALI_", replacement = "Mali - ")
+		)
+```
+
+```{r DAPC plot, echo=FALSE}
+library(gridExtra)
+library(viridis)
+
+scatter_dapc <- list(
+	eigen = (
+	data.frame(
+    DAs = factor(
+        paste0("Discriminant function ", 1:length(dapc_countries$eig)),
+        levels = paste0("Discriminant function ", 1:length(dapc_countries$eig))),
+    eigenvalues = dapc_countries$eig) %>%
+    ggplot(aes(DAs, eigenvalues, fill = eigenvalues)) +
+    geom_col() + 
+    labs(x = "", y = "Eigenvalues", 
+         title = "Eigenvalues of retained discriminant functions") +
+    #scale_y_continuous(breaks = seq(0, 1000, 200)) +
+		theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
+          legend.position = "none")), 
+	ld1_ld2 =
+		(ggplot(dapc_da, aes(LD1, LD2, color = newClusters)) + 
+		 	geom_point(shape = 1) + stat_ellipse(aes(color = newClusters), size = 0.75) +
+		 	labs(x = "DAPC LD1", y = "DAPC LD2") +
+		 scale_color_viridis_d(option = "H", name = "")),
+	ld3_ld4 =
+		(ggplot(dapc_da, aes(LD3, LD4, color = newClusters)) + 
+		 	geom_point(shape = 1) + stat_ellipse(aes(color = newClusters), size = 0.75) +
+		 	labs(x = "DAPC LD3", y = "DAPC LD4") +
+		 scale_color_viridis_d(option = "H", name = ""))
+)
+
+dir.create(path = "plotsSeptember2023")
+
+pdf(paste0("plotsSeptember2023/Scatters_DAPC_noCameroon", Sys.Date(), ".pdf"), onefile = T, width = 8)
+
+scatter_dapc
+
+dev.off()
+```
+
+```{r Structure-like plot - findclusters, fig.width=13.9, fig.height=7.21}
+membership_probability = data.frame(
+	individuals = rownames(dapc_countries[["posterior"]]),
+	dapc_countries[["posterior"]]
+) %>% merge(
+	data.frame(individuals = non_cameroon_popinfo$Taxa.Name,
+						 pops = dapc_da$newClusters),
+	by = "individuals") %>%
+	pivot_longer(
+	-c(individuals, pops), names_to = "Clusters", 
+	values_to = "probability", names_prefix = "X") 
+
+membership_probability$individuals <- 
+	factor(membership_probability$individuals,
+				 levels = non_cameroon_popinfo$Taxa.Name[
+				 	order(non_cameroon_popinfo$Taxa.Name)])
+
+membership_probability$Clusters <-
+	membership_probability$Clusters %>%
+	gsub(pattern = "CAMEROUN_", 
+			 replacement = "Cameroon - ") %>% 
+			gsub(pattern = "TCHAD_", replacement = "Chad - ") %>%
+			gsub(pattern = "MALI_", replacement = "Mali - ") %>% 
+	gsub(pattern = "(Logone)\\.(\\w)", replacement = "\\1 \\2") %>%
+	gsub(pattern = "(\\w)\\.(\\w)", replacement = "\\1-\\2")
+		
+
+mem_prob_pops <- lapply(unique(membership_probability$Clusters), function(i) {
+		title = i
+		filter(membership_probability, pops == i) %>%
+		ggplot(
+       aes(individuals, probability, fill = Clusters)) +
+    geom_col() + 
+			labs(x = "", y = "",
+					 title = title) +
+			scale_y_continuous(breaks = c(0, 1)) +
+			scale_fill_viridis_d(option = "H") + 
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+    			axis.title.y = element_text(vjust = 0.5),
+          panel.grid = element_blank(), 
+    			plot.title = element_text(hjust = 0.5, size = 10)
+    			)
+	})
+
+plot_groups <- ggarrange(
+	plotlist = mem_prob_pops, 
+	ncol = 3, nrow = 3, labels = "AUTO", 
+	common.legend = T, legend = "bottom")
+
+ggsave(
+	filename = paste0("plotsSeptember2023/Cluster_membership_DAPC_DA4_PC50_k7_", Sys.Date(), ".pdf"), 
+   plot = plot_groups, width = 8
+)
+
+```
+
+```{r DAPC PCA - findclusters plot}
+
+dapc_pca <- data.frame(
+	non_cameroon_popinfo[, 2:5],
+	dapc_countries$tab[, 1:10]
+)
+
+ggplot(dapc_pca, aes(PCA.pc.1, PCA.pc.2, color = paste(Country, "-", Region))) + 
+	geom_point() +
+	scale_color_viridis(discrete = T, option = "turbo")
+```
+
+## Without Cameroon and Mali
+
+```{r}
+Chad_popinfo = filter(population_information,
+													 Country == "TCHAD")
+Chad_inds = Chad_popinfo$Taxa.Name
+
+Chad_genind = total_vcf_hierfstat[Chad_inds,]
+```
+
+```{r DAPC with find.clusters, echo=FALSE}
+Chad_popinfo$Region <-
+	Chad_popinfo$Region %>%
+	gsub(pattern = "ord", replacement = "orth") %>%
+	gsub(pattern = "Ouest", replacement = "West")
+
+theme_set(theme_bw())
+strata(Chad_genind) <- Chad_popinfo
+setPop(Chad_genind) <-
+	~Region/Location.Population
+
+clusters_karite <- Chad_popinfo$Region
+names(clusters_karite) <- Chad_popinfo$Taxa.Name
+
+dapc_countries <- dapc(Chad_genind, 
+											 clusters_karite, 
+											 truenames = T,
+											 n.pca = 30, 
+											 n.da = 4
+											 )
+
+scatter(dapc_countries, xax = 1, yax = 2)
+
+dapc_da <- data.frame(
+	Chad_popinfo[, 2:5],
+	clusters = dapc_countries$grp,
+	dapc_countries$ind.coord
+) %>%
+	mutate(
+		newClusters = 
+			gsub(pattern = "TCHAD_", replacement = "Chad - ", clusters) %>%
+			gsub(pattern = "MALI_", replacement = "Mali - ")
+		)
+```
+
+```{r DAPC plot, echo=FALSE}
+library(gridExtra)
+library(viridis)
+
+scatter_dapc <- list(
+	eigen = (
+	data.frame(
+    DAs = factor(
+        paste0("Discriminant function ", 1:length(dapc_countries$eig)),
+        levels = paste0("Discriminant function ", 1:length(dapc_countries$eig))),
+    eigenvalues = dapc_countries$eig) %>%
+    ggplot(aes(DAs, eigenvalues, fill = eigenvalues)) +
+    geom_col() + 
+    labs(x = "", y = "Eigenvalues", 
+         title = "Eigenvalues of retained discriminant functions") +
+    #scale_y_continuous(breaks = seq(0, 1000, 200)) +
+		theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
+          legend.position = "none")), 
+	ld1_ld2 =
+		(ggplot(dapc_da, aes(LD1, LD2, color = newClusters)) + 
+		 	geom_point(shape = 1) + 
+		 	stat_ellipse(aes(color = newClusters), size = 0.75) +
+		 	labs(x = "DAPC LD1", y = "DAPC LD2") +
+		 scale_color_viridis_d(option = "H", name = "")),
+	ld3_ld4 =
+		(ggplot(dapc_da, aes(LD3, LD4, color = newClusters)) + 
+		 	geom_point(shape = 1) + stat_ellipse(aes(color = newClusters), size = 0.75) +
+		 	labs(x = "DAPC LD3", y = "DAPC LD4") +
+		 scale_color_viridis_d(option = "H", name = ""))
+)
+
+dir.create(path = "plotsSeptember2023")
+
+pdf(paste0("plotsSeptember2023/Scatters_DAPC_Tchad", Sys.Date(), ".pdf"), onefile = T, width = 8)
+
+scatter_dapc
+
+dev.off()
+```
+
+\`\`\`{r Structure-like plot - findclusters, fig.width=13.9, fig.height=7.21} membership_probability = data.frame( individuals = rownames(dapc_countries[["posterior"]]), dapc_countries[["posterior"]] ) %\>% merge( data.frame(individuals = Chad_popinfo$Taxa.Name,  pops = dapc_da$newClusters), by = "individuals") %\>% pivot_longer( -c(individuals, pops), names_to = "Clusters", values_to = "probability", names_prefix = "X")
+
+membership_probability$individuals <-  factor(membership_probability$individuals, levels = Chad_popinfo$Taxa.Name[  order(Chad_popinfo$Taxa.Name)])
+
+membership_probability$Clusters <-  membership_probability$Clusters %\>% gsub(pattern = "CAMEROUN\_", replacement = "Cameroon -") %\>% gsub(pattern = "TCHAD\_", replacement = "Chad -") %\>% gsub(pattern = "MALI\_", replacement = "Mali -") %\>% gsub(pattern = "(Logone)\\.(\\w)", replacement = "\\1 \\2") %\>% gsub(pattern = "(\\w)\\.(\\w)", replacement = "\\1-\\2")
+
+mem_prob_pops \<- lapply(unique(membership_probability\$Clusters), function(i) { title = i filter(membership_probability, pops == i) %\>% ggplot( aes(individuals, probability, fill = Clusters)) + geom_col() + labs(x = "", y ="", title = title) + scale_y_continuous(breaks = c(0, 1)) + scale_fill_viridis_d(option ="H") + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), axis.title.y = element_text(vjust = 0.5), panel.grid = element_blank(), plot.title = element_text(hjust = 0.5, size = 10) ) })
+
+plot_groups \<- ggarrange( plotlist = mem_prob_pops, ncol = 3, nrow = 2, labels = "AUTO", common.legend = T, legend = "bottom")
+
+ggsave( filename = paste0("plotsSeptember2023/Cluster_membership_DAPC_DA4_PC30_k6\_", Sys.Date(), ".pdf"), plot = plot_groups, width = 8 )
